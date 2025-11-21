@@ -1,0 +1,348 @@
+simple_random_shapes.c继续改进，编译用：
+glcc -o simple_random_shapes.gt1 simple_random_shapes.c -map=64k -rom=v5a；
+现在擦除功能不完善，在屏幕边缘移动时会将边框之外的内容擦除导致系统卡死请仔细检查并限制。
+另外精灵斜向走时没有正确擦除，请优化。
+
+
+请写一个hello并编译：
+python glcc -o hello.gt1 hello.c -map=64k -rom=v5a；
+
+很好，请用python \build\glcc
+编译D:\working\vscode-projects\Reference_Project\Gigatron\gigatron-lcc-master\stuff\blit；
+
+文档中的每一个描述必须溯源，这是最基本的原则。
+
+文档内容需要修正，请仔细研究以下包含文件，删除文档中的不实际描述，对真实存在的功能定位到文件相对目录和行数。
+D:\working\vscode-projects\Reference_Project\Gigatron\gigatron-lcc-master\build\include；
+
+
+新加入的精灵擦除不正确，请研究。
+
+很好，现在我们加入新的一个绿色的精灵，随机一个初始的速度和方向，让其在屏幕内碰撞和弹跳，如果碰到边缘或者主机，就反弹。
+
+
+你认为vdrawbits和SetMemory和精灵操作有什么区别，对于擦除轨迹哪个会更快更方便，请将开发的新内容写入文档simple_random_shapes开发文档.md
+
+simple_random_shapes开发文档.md
+
+我发现只有左右移动时才实现了正常的擦除，上下移动没有擦除，请检查
+
+参考gigatron_graphics_sound_analysis.md内的方法用SYS_VDrawBits来擦除，因为它可以一次性操作多个像素点。
+
+simple_random_shapes.c继续改进，编译用：
+glcc -o simple_random_shapes.gt1 simple_random_shapes.c -map=64k -rom=v5a；
+现在精灵移动会留下轨迹，请直接写白色到显存来擦除轨迹，每次精灵只能向一个方向移动一个像素点，因此留下的痕迹只有6个像素，只需要擦除这6个像素即可。
+
+
+
+
+很好，但是闪动过于频繁，移动时请记录包围矩阵，然后用白色快速填充方法来清理该区域，然后再画新精灵，这样可以避免闪烁。这是局部刷新背景。
+
+这个擦除逻辑太复杂了，让我们直接在每次移动精灵时重新画一次白色背景。
+
+现在擦除逻辑有问题，比如精灵向上走一个像素时，你应该用擦除精灵进行同步显示，它的坐标就是精灵移动之前的坐标。注意你需要生成4个方向的擦除精灵，其中5行/列为精灵当前颜色做填充，最后一行是白色，这里的最后一行取决于精灵移动的方向，如果精灵向上移动，那么白色的就是第六行，向左移动就是第六列，向右侧移动就是第一列，向下移动就是第一行。
+
+很好但是只有向上走时的擦除逻辑是正确的，请修复其他方向。
+
+很好，但是精灵移动后会留下轨迹，请在精灵移动过的轨迹用白色擦除其轨迹，只要精灵移动，每一帧都用白色精灵擦除其身后的轨迹。注意计算擦除精灵的形状。所有的精灵都是6x6大小，如果我控制精灵向左移动一个像素点，那么精灵右侧就需要擦除6个像素点，你可以初始化4个方向的擦除精灵，只填充一列或者一行白色，那么这个擦除精灵就只有一行或者一列会显示。6x6精灵并不要求完全使用，你可以只用一部分。
+
+simple_random_shapes.c继续改进，编译用：
+glcc -o simple_random_shapes.gt1 simple_random_shapes.c -map=64k -rom=v5a；
+很好，请为start按键映射屏幕初始化功能，就是和程序开始一样先清理屏幕，再进行白色填充，但是按键之后保持精灵当前位置和颜色。
+
+
+为什么simple_random_shapes11.c对精灵初始化更正常？请研究。
+
+非常好，但是删除和精灵相关的所有随机函数，因为我看见了错误的精灵颜色，请仔细检查精灵生成过程应该全部确定，没有任何随机过程。
+
+非常好，但是按下start之后不要让精灵回到初始位置，而是记住当前位置不复位，颜色也保持。
+
+
+
+
+非常好，现在长按识别已经完成，请移除控制台输出，并且移除精灵随机初始化，而是为精灵初始化为全部红色填充数组。
+
+simple_random_shapes.c继续改进，编译用：
+glcc -o simple_random_shapes.gt1 simple_random_shapes.c -map=64k -rom=v5a；
+不要这一行，#pragma glcc option("KBGET_AUTOBTN")；
+参考getkey4_simple.c实现简化的按键检测。
+
+glcc -o simple_random_shapes11.gt1 simple_random_shapes11.c -map=64k -rom=v6
+simple_random_shapes11.c
+
+glcc -o getkey4_simple.gt1 getkey4_simple.c -map=64k -rom=v5a
+这个可以实现长按检测。
+
+很明显我们在按键检测方面有困难，请每一次按键改变时，printf按键值
+
+
+不要什么延时，简化按键检测逻辑，很简单一共存储一个旧键值即可，不要任何延时，下一个检测循环再检测一次，然后给一比对这两个数值是否有改变即可，这非常简单就可以实现按键长按，本逻辑对所有按键有效。
+
+
+
+按键长按时，检测并记录旧的键值，第二次扫描如果相同则执行长按
+
+Gigatron按键长按时旧的键值不变，请注意。目前长按没有连续移动效果。
+
+很好，继续添加按键长按识别逻辑，长按就连续移动。
+
+很好，不要控制台输出语句，然后按键上下左右控制精灵移动，ab键顺序切换颜色，
+
+很好，我们成功了，请写一个新的md文档来介绍本次开发
+
+取消随机，每次按上下左右自动设置颜色，自动绘制新的精灵
+
+我猜测精灵的颜色格式和矩形的完全相同，我猜测数组中的元素表示颜色，数组索引表示像素点的位置，你可以直接给数组每个元素赋值矩形那种格式的color，按手柄上下/左右键切换颜色。
+
+按键好了，但是按b键先快速清屏就像程序开始那样，然后再填充白色。
+目前无论如何都只能生成2行2x6像素点，我认为你的数组应该初始化为36而不是12.
+
+
+simple_random_shapes.c继续改进，参考plane_war.c实现按键处理，编译用：
+glcc -o simple_random_shapes.gt1 simple_random_shapes.c -map=64k -rom=v5a
+
+请参考：glcc_gigatron_声音图形特性研究.md，每按一次手柄A键，就生成一个新的精灵，位置固定在屏幕正中心不要随机，并打印数据，然后按手柄B键用白色快速填充屏幕。
+
+请参考：glcc_gigatron_声音图形特性研究.md，每按一次手柄start键，就生成一个新的精灵，其他时候暂停生成：
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\lib\gigatron-lcc\include\gigatron
+
+simple_random_shapes8.c产生的精灵可以看见，请参考，每次生成一个精灵，就在屏幕上printf“mode”
+
+不要用未出现的系统调用，研究这里头文件，禁止直接绘制像素：
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\lib\gigatron-lcc\include\gigatron
+
+/* -- SYS_Sprite6[x][y] --
+   Notes: This is best called from a subroutine to perform general blits */
+   
+直接帮我初始化这个数组，然后我自己往里面填数据，
+先画一个边框大小的白色矩形来填充全部区域，
+只画这一个矩形，取消随机矩形
+
+我看见了精灵，有时候它是一行，大多数时候是一个矩形，每一个矩形里面的色块似乎相同。
+
+
+禁止使用其他方法绘制三角形。由于我们不理解精灵的格式，那么请为6x6数组内随机填充，然后显示随机的数据。
+
+禁止运行gtsim。精灵还是3个像素点。
+
+simple_random_shapes.c继续改进，请研究为什么精灵只是一行6个像素点，
+glcc -o simple_random_shapes.gt1 simple_random_shapes.c -map=64k -rom=v5a
+
+研究这里头文件：
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\lib\gigatron-lcc\include\gigatron
+
+整理思路，压缩上下文，然后继续
+
+等一下，精灵只允许6*6，请绘制6*6以内的三角形
+
+看见一堆竖线。请固定三角形为边长10的等边三角形
+
+请绘制一个固定大小的三角形作为精灵，请研究这里看看有没有快速绘制精灵的方法。
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\lib\gigatron-lcc\include\gigatron
+
+只看见一些竖线，先取消全部三角形
+
+画出来的三角形像两个高矮不同的矩形连在一起，请研究这里看看有没有其他办法。
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\lib\gigatron-lcc\include\gigatron
+
+画出来像梯形，请先绘制好，然后复制进入内存。
+
+三角形用实心填充，和矩形一样也用快速绘图方法，直接写内存。
+
+三角形必须也执行顶点检测，和矩形一样
+
+取消重叠检测，尽情画，不需要多次清屏
+
+发现就绘制了4个图形就卡死了，继续优化
+
+速度很慢，老半天才看见一个三角形，请检查
+
+很好，在此基础上加入三角形绘制，加入重叠检测，不允许重叠，如果屏幕被占满则自动清屏。
+
+很好，gigatron支持RGB222,64色，请使用更多颜色
+
+很好，请加入顶点检测，确保所有方块都在边框范围内完整显示。
+
+很好，方块速度快了很多，但是每次绘制5个左右就会停顿，请不要停顿。
+
+很好，在此基础上对方块绘制进行加速
+
+SYS_Fill() 导致系统卡死，请研究这里看看有没有其他办法。
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\lib\gigatron-lcc\include\gigatron
+
+很好，请请参考：glcc_gigatron_声音图形特性研究.md，先快速清屏，然后使用黑色绘制屏幕边框。
+
+很好，边框缩减为5像素。
+
+很好，但是我的意思是距离屏幕边缘20像素不绘制图形，相当于有一个边框。
+
+很好，请将屏幕绘制范围缩小为1/4，也就是只绘制屏幕中心点开始的3/4范围。
+
+请删除最开始的清屏过程，直接开始绘制，并且保证像素点都在屏幕以内，简化程序，我只绘制矩形。
+
+参考rndbrot.c进行边界检测，目前还是1秒后崩溃
+
+很好，simple_random_shapes.c继续改进，目前绘制的图形会超出gigatron屏幕显示范围导致系统崩溃，请改进。
+编译使用：
+glcc -o simple_random_shapes.gt1 simple_random_shapes.c -map=64k -rom=v5a
+
+很好，本程序有效果，rndbrot能正常绘图，请随机绘制各种三角形，长方形，圆形， -map=64k -rom=v5a
+
+参考rndbrot.c进行绘图，不要自己乱写，会卡死。
+glcc -o rndbrot.gt1 rndbrot.c -map=64k -rom=v5a
+
+
+目前编译出来的程序在仿真器中无法正常运行，你能参考它发现问题吗：
+
+用glcc编译它：
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\bin\stuff\blit\Makefile。
+
+用glcc编译文档.md提到的函数写一个简单的图形测试程序，禁止使用控制台，
+使用-rom=v5a和-map=64k内存进行编译。请使用glcc编译,
+编译完成之后无需调试。
+
+调试用D:\working\vscode-projects\Reference_Project\Gigatron\ROMvX0-main\Exe\gtemuAT67_WIN10_x64.exe xxx.gt1
+
+
+
+请参考：glcc_gigatron_声音图形特性研究.md
+写一个图形化飞机大战，禁止使用控制台。
+
+
+
+控制台版本能运行，请不要编译控制台版本。我只要运行使用专门绘图函数的版本。
+
+好，那你写一个用手柄控制的飞机大战游戏，使用rom v5a和64k内存。请使用glcc编译
+调试用D:\working\vscode-projects\Reference_Project\Gigatron\ROMvX0-main\Exe\gtemuAT67_WIN10_x64.exe xxx.gt1
+
+阅读里面头文件，详细研究glcc支持gigatron的哪些声音和图形特性？这对制作游戏很有用。
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\lib\gigatron-lcc\include\gigatron
+
+参考D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\bin\stuff，能不能将游戏改为直接绘图模式而不是使用控制台，用控制台太卡了。
+
+但是注意学习TSTsnake和TSTkbget对按键的处理。
+
+整个屏幕在严重闪烁。
+
+学习这个游戏的各种方法，写一个飞机大战。
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\bin\stuff\conio
+
+注意参考snake-ref.c改进游戏。
+编译用：
+glcc
+glcc -o snake64.gt1 snake.c -Dprintf=mincprintf -map=64k -rom=dev7
+调试用D:\working\vscode-projects\Reference_Project\Gigatron\ROMvX0-main\Exe\gtemuAT67_WIN10_x64.exe xxx.gt1
+
+很好，请用glcc写一个简单的游戏，注意使用库：
+D:\working\vscode-projects\Reference_Project\Gigatron\glcc-2.4\lib\gigatron-lcc\include
+编译用：glcc -rom=v5a -map=conx hello.c -o hello.gt1
+调试用D:\working\vscode-projects\Reference_Project\Gigatron\ROMvX0-main\Exe\gtemuAT67_WIN10_x64.exe hello.gt1
+
+
+glcc -rom=v5a -map=conx hello.c -o hello.gt1
+glcc  -rom=v5a -map=conx %name%.c -o %name%_v5a_32k.gt1
+
+# GLCC编译器使用指南
+
+## 概述
+GLCC是Gigatron的C语言编译器，用于将C代码编译为Gigatron VCPU可执行的.gt1格式文件。
+
+## 编译hello.c的步骤
+
+### 1. 创建源代码文件
+首先创建一个简单的hello.c文件：
+```c
+#include <stdio.h>
+
+int main() {
+    printf("Hello, Gigatron!\n");
+    return 0;
+}
+```
+
+### 2. 使用glcc编译
+在命令行中执行以下命令：
+```
+glcc.cmd hello.c
+```
+
+这将生成默认的输出文件a.gt1。
+
+### 3. 指定输出文件名
+如果想要指定输出文件名，可以使用-o选项：
+```
+glcc.cmd hello.c -o hello.gt1
+```
+
+### 4. 查看编译结果
+使用gt1dump工具查看编译后的文件内容：
+```
+gt1dump.cmd hello.gt1
+```
+
+## 编译过程中遇到的问题
+
+### 文件末尾换行符警告
+在编译过程中可能会看到以下警告：
+```
+cpp: hello.c:6 No newline at end of file
+```
+
+这个警告不会影响编译结果，但建议在源文件末尾添加换行符以消除警告。
+
+## GLCC编译器选项
+
+### 基本选项
+- `-o GT1FILE`: 指定输出文件名（默认为a.gt1）
+- `-h, --help`: 显示帮助信息
+- `-V, --version`: 显示版本信息
+
+### 目标平台选项
+- `-cpu CPU`: 选择目标vCPU（4, 5, 6, 7）
+- `-rom ROM`: 选择目标ROM版本（v4, v5a, v6, dev7等）
+- `-map MAP`: 选择链接器映射（32k, 64k, sim等）
+
+### 调试选项
+- `--symbols, --syms`: 输出符号列表
+- `--fragments, --frags`: 输出内存映射
+- `--debug-messages, -d`: 启用调试输出
+
+## 工具链说明
+
+### 主要工具
+- `glcc.cmd`: C语言编译器
+- `glink.cmd`: 链接器，将目标文件链接为.gt1文件
+- `gt1dump.cmd`: 用于查看.gt1文件的内容
+- `gtsim.cmd`: Gigatron模拟器
+- `gtprof.cmd`: 性能分析工具
+
+### 文件格式
+- `.c`: C源代码文件
+- `.o/.s`: 编译后的目标文件
+- `.a`: 库文件
+- `.gt1`: Gigatron可执行文件
+
+## 示例项目结构
+```
+bin/
+├── glcc.cmd          # 编译器
+├── glink.cmd         # 链接器
+├── gt1dump.cmd       # 查看工具
+├── gtsim.cmd         # 模拟器
+├── gtprof.cmd        # 性能分析
+├── hello.c           # 源代码
+├── hello.gt1         # 编译后的可执行文件
+└── make.exe          # 构建工具
+```
+
+## 运行程序
+编译完成后，可以使用Gigatron模拟器运行程序：
+```
+gtsim.cmd hello.gt1
+```
+
+## 注意事项
+1. 确保源文件末尾有换行符以避免警告
+2. GLCC是为Gigatron平台定制的编译器，生成的代码只能在Gigatron VCPU上运行
+3. 编译过程中可能会产生一些警告，但通常不影响程序功能
+4. 建议使用适当的ROM版本和CPU选项以获得最佳兼容性
