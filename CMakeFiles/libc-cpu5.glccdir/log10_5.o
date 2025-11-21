@@ -1,0 +1,28 @@
+#VCPUv5
+
+# ======== ('DATA', 'one_over_ln10', code0, 5, 1)
+def code0():
+	label('one_over_ln10');
+	bytes(127,94,91,216,169); # 0.434294
+# ======== ('CODE', 'log10', code1)
+def code1():
+	label('log10');
+	_PROLOGUE(16,8,0xe0); # save=R5-7
+	_MOVF(F8,F5);
+	_MOVF(F5,F8);
+	CALLI('log');
+	LDWI('one_over_ln10');_FMUL();
+	label('.3');
+	_EPILOGUE(16,8,0xe0);
+# ======== (epilog)
+code=[
+	('DATA', 'one_over_ln10', code0, 5, 1),
+	('EXPORT', 'log10'),
+	('CODE', 'log10', code1),
+	('IMPORT', 'log') ]
+module(code=code, name='../gigatron/libc/log10.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

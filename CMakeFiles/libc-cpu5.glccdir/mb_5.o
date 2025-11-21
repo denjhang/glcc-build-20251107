@@ -1,0 +1,174 @@
+#VCPUv5
+
+# ======== ('CODE', 'ctow', code0)
+def code0():
+	label('ctow');
+	PUSH();
+	LDW(R8);ANDI(252);XORI(128);_BNE('.4');
+	LDWI(8592);STW(R23);
+	LDW(R8);ANDI(3);ADDW(R23);STW(R8);
+	label('.4');
+	LDW(R8);
+	label('.3');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'wtoc', code1)
+def code1():
+	label('wtoc');
+	PUSH();
+	LDWI(8592);STW(R23);
+	LDWI(0xfffc);ANDW(R8);XORW(R23);_BNE('.7');
+	LDW(R8);ANDI(3);ORI(128);
+	_BRA('.6');
+	label('.7');
+	LDWI(0xff00);ANDW(R8);_BNE('.11');
+	LDW(R8);ANDI(252);XORI(128);_BNE('.9');
+	label('.11');
+	LDWI(-1);
+	_BRA('.6');
+	label('.9');
+	LDW(R8);
+	label('.6');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'mblen', code2)
+def code2():
+	label('mblen');
+	PUSH();
+	LDW(R8);_BEQ('.15');
+	PEEK();_BNE('.13');
+	label('.15');
+	LDI(0);
+	_BRA('.12');
+	label('.13');
+	LDW(R9);_BNE('.16');
+	LDWI(-1);
+	_BRA('.12');
+	label('.16');
+	LDI(1);
+	label('.12');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'mbtowc', code3)
+def code3():
+	label('mbtowc');
+	_PROLOGUE(12,4,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	_BNE('.19');
+	LDWI(-1);
+	_BRA('.18');
+	label('.19');
+	LDW(R6);_BEQ('.23');
+	PEEK();_BNE('.21');
+	label('.23');
+	LDI(0);
+	_BRA('.18');
+	label('.21');
+	LDW(R7);_BEQ('.24');
+	LDW(R6);PEEK();STW(R8);
+	CALLI('ctow');
+	DOKE(R7);
+	label('.24');
+	LDI(1);
+	label('.18');
+	_EPILOGUE(12,4,0xe0,saveAC=True);
+# ======== ('CODE', 'wctomb', code4)
+def code4():
+	label('wctomb');
+	_PROLOGUE(12,4,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	STW(R8);
+	CALLI('wtoc');
+	STW(R5);
+	LDW(R7);_BNE('.27');
+	LDI(0);
+	_BRA('.26');
+	label('.27');
+	LDW(R5);_BGE('.29');
+	LDWI(-1);
+	_BRA('.26');
+	label('.29');
+	LDW(R5);POKE(R7);
+	LDI(1);
+	label('.26');
+	_EPILOGUE(12,4,0xe0,saveAC=True);
+# ======== ('CODE', 'mbstowcs', code5)
+def code5():
+	label('mbstowcs');
+	_PROLOGUE(12,2,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDI(0);STW(R4);
+	LDW(R6);_BEQ('.32');
+	_BRA('.35');
+	label('.34');
+	LDW(R7);_BEQ('.37');
+	LDW(R6);PEEK();STW(R8);
+	CALLI('ctow');
+	DOKE(R7);
+	LDI(2);ADDW(R7);STW(R7);
+	label('.37');
+	LDI(1);ADDW(R4);STW(R4);
+	LDI(1);ADDW(R6);STW(R6);
+	label('.35');
+	LDW(R6);PEEK();_BEQ('.39');
+	LDW(R4);_CMPWU(R5);_BLT('.34');
+	label('.39');
+	label('.32');
+	LDW(R4);
+	label('.31');
+	_EPILOGUE(12,2,0xf0,saveAC=True);
+# ======== ('CODE', 'wcstombs', code6)
+def code6():
+	label('wcstombs');
+	_PROLOGUE(16,4,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDI(0);STW(R4);
+	LDW(R6);_BEQ('.41');
+	_BRA('.44');
+	label('.43');
+	LDW(R6);DEEK();STW(R8);
+	CALLI('wtoc');
+	STW(R3);
+	_BGE('.46');
+	LDWI(0xffff);
+	_BRA('.40');
+	label('.46');
+	LDW(R7);_BEQ('.48');
+	STW(R23);
+	ADDI(1);STW(R7);
+	LDW(R3);POKE(R23);
+	label('.48');
+	LDI(1);ADDW(R4);STW(R4);
+	LDI(2);ADDW(R6);STW(R6);
+	label('.44');
+	LDW(R6);DEEK();_BEQ('.50');
+	LDW(R4);_CMPWU(R5);_BLT('.43');
+	label('.50');
+	label('.41');
+	LDW(R4);
+	label('.40');
+	_EPILOGUE(16,4,0xf8,saveAC=True);
+# ======== (epilog)
+code=[
+	('CODE', 'ctow', code0),
+	('CODE', 'wtoc', code1),
+	('EXPORT', 'mblen'),
+	('CODE', 'mblen', code2),
+	('EXPORT', 'mbtowc'),
+	('CODE', 'mbtowc', code3),
+	('EXPORT', 'wctomb'),
+	('CODE', 'wctomb', code4),
+	('EXPORT', 'mbstowcs'),
+	('CODE', 'mbstowcs', code5),
+	('EXPORT', 'wcstombs'),
+	('CODE', 'wcstombs', code6) ]
+module(code=code, name='../gigatron/libc/mb.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

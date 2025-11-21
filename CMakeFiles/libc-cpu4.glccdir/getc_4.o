@@ -1,0 +1,35 @@
+#VCPUv4
+
+# ======== ('CODE', 'getc', code0)
+def code0():
+	label('getc');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	STW(R8);
+	LDWI('fgetc');CALL(vAC);
+	
+	label('.5');
+	_EPILOGUE(8,4,0x80,saveAC=True);
+# ======== ('CODE', 'getchar', code1)
+def code1():
+	label('getchar');
+	_PROLOGUE(4,2,0x0); # save=None
+	LDWI('_iob0');STW(R8);
+	LDWI('fgetc');CALL(vAC);
+	
+	label('.6');
+	_EPILOGUE(4,2,0x0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'getc'),
+	('CODE', 'getc', code0),
+	('EXPORT', 'getchar'),
+	('CODE', 'getchar', code1),
+	('IMPORT', 'fgetc'),
+	('IMPORT', '_iob0') ]
+module(code=code, name='../gigatron/libc/getc.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

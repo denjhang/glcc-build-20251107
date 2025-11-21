@@ -1,0 +1,96 @@
+#VCPUv7
+
+# ======== ('DATA', 'P', code0, 25, 1)
+def code0():
+	label('P');
+	bytes(128,224,3,253,16); # -0.875061
+	bytes(133,129,66,162,219); # -16.1575
+	bytes(135,150,4,97,180); # -75.0086
+	bytes(135,245,197,249,104); # -122.887
+	bytes(135,129,179,79,233); # -64.8502
+# ======== ('DATA', 'Q', code1, 25, 1)
+def code1():
+	label('Q');
+	bytes(133,70,222,34,217); # 24.8585
+	bytes(136,37,6,234,30); # 165.027
+	bytes(137,88,112,198,151); # 432.881
+	bytes(137,114,177,248,158); # 485.39
+	bytes(136,66,140,247,222); # 194.551
+# ======== ('CODE', 'atan', code2)
+def code2():
+	label('atan');
+	_PROLOGUE(40,10,0xfc); # save=R2-7
+	_MOVF(F8,F5);
+	_MOVF('_fone',F8);
+	_MOVF(F5,F11);
+	CALLI('copysign');
+	_MOVF(FAC,[SP,-10+40]);
+	_MOVF('.4',[SP,-5+40]);
+	_MOVF(F5,F8);
+	CALLI('fabs');
+	_MOVF(FAC,F5);
+	_MOVF(F5,FAC);LDWI('.7');_FCMP();_BLE('.5');
+	_MOVF('_pi_over_2',[SP,-5+40]);
+	LDWI('_fminus');_FDIVR();_MOVF(FAC,F5);
+	_BRA('.6');
+	label('.5');
+	_MOVF(F5,FAC);LDWI('.10');_FCMP();_BLE('.8');
+	_MOVF('_pi_over_4',[SP,-5+40]);
+	_MOVF('_fone',F21);
+	LDI(F21);_FADD();_MOVF(FAC,F18);
+	_MOVF(F5,FAC);LDI(F21);_FSUB();LDI(F18);_FDIV();_MOVF(FAC,F5);
+	label('.8');
+	label('.6');
+	_MOVF(F5,FAC);LDI(F5);_FMUL();_MOVF(FAC,F2);
+	_MOVF(F2,F8);
+	MOVIW('P',R11);
+	MOVQW(4,R12);
+	CALLI('_polevl');_MOVF(FAC,F21);
+	STW(T0);_MOVF(F21,[SP,-15+40]);LDW(T0) #genspill
+	_MOVF(F2,F8);
+	MOVIW('Q',R11);
+	MOVQW(5,R12);
+	CALLI('_p1evl');_MOVF(FAC,F18);
+	_MOVF(F2,FAC);_SP(-15+40);_FMUL();LDI(F18);_FDIV();_MOVF(FAC,F2);
+	_MOVF(F5,FAC);LDI(F2);_FMUL();LDI(F5);_FADD();_MOVF(FAC,F5);
+	_SP(-5+40);_FADD();_MOVF(FAC,F8);
+	_MOVF([SP,-10+40],F11);
+	CALLI('copysign');
+	
+	label('.3');
+	_EPILOGUE(40,10,0xfc);
+# ======== ('DATA', '.10', code3, 0, 1)
+def code3():
+	label('.10');
+	bytes(128,25,153,153,154); # 0.6
+# ======== ('DATA', '.7', code4, 0, 1)
+def code4():
+	label('.7');
+	bytes(130,25,153,153,154); # 2.4
+# ======== ('DATA', '.4', code5, 0, 1)
+def code5():
+	label('.4');
+	bytes(0,0,0,0,0); # 0
+# ======== (epilog)
+code=[
+	('DATA', 'P', code0, 25, 1),
+	('DATA', 'Q', code1, 25, 1),
+	('EXPORT', 'atan'),
+	('CODE', 'atan', code2),
+	('IMPORT', '_p1evl'),
+	('IMPORT', '_polevl'),
+	('IMPORT', '_fminus'),
+	('IMPORT', '_fone'),
+	('IMPORT', '_pi_over_4'),
+	('IMPORT', '_pi_over_2'),
+	('IMPORT', 'copysign'),
+	('IMPORT', 'fabs'),
+	('DATA', '.10', code3, 0, 1),
+	('DATA', '.7', code4, 0, 1),
+	('DATA', '.4', code5, 0, 1) ]
+module(code=code, name='../gigatron/libc/atan.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

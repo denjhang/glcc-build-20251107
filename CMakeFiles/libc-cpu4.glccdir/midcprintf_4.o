@@ -1,0 +1,32 @@
+#VCPUv4
+
+# ======== ('CODE', 'midcprintf', code0)
+def code0():
+	label('midcprintf');
+	_PROLOGUE(20,6,0xe0); # save=R5-7
+	_SP(0+20);STW(R23);
+	LDW(R8);DOKE(R23);
+	LDW(R0);STW(R7);
+	_SP(2+20);STW(R5);
+	_SP(-2+20);STW(R23);
+	LDWI('console_writall');DOKE(R23);
+	_SP(0+20);DEEK();STW(R8);
+	LDW(R5);STW(R9);
+	LDWI('_doprint_simple');CALL(vAC);
+	STW(R6);
+	LDW(R7);STW(R0);
+	LDW(R6);
+	label('.11');
+	_EPILOGUE(20,6,0xe0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'midcprintf'),
+	('CODE', 'midcprintf', code0),
+	('IMPORT', '_doprint_simple'),
+	('IMPORT', 'console_writall') ]
+module(code=code, name='../gigatron/libc/midcprintf.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

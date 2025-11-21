@@ -1,0 +1,122 @@
+#VCPUv4
+
+# ======== ('DATA', 'sys_errlist', code0, 0, 2)
+def code0():
+	align(2);
+	label('sys_errlist');
+	words('.1');
+	words('.2');
+	words('.3');
+	words('.4');
+	words('.5');
+	words('.6');
+	words('.7');
+	words('.8');
+	words('.9');
+	words('.10');
+	words('.11');
+# ======== ('DATA', 'sys_nerr', code1, 2, 2)
+def code1():
+	align(2);
+	label('sys_nerr');
+	words(11); # 11
+# ======== ('CODE', 'strerror', code2)
+def code2():
+	label('strerror');
+	PUSH();
+	LDW(R8);_BLT('.13');
+	_CMPIU(11);_BGE('.13');
+	LDWI('sys_errlist');ADDW(R8);ADDW(R8);DEEK();
+	_BRA('.12');
+	label('.13');
+	LDWI('sys_errlist');DEEK();
+	label('.12');
+	tryhop(2);POP();RET()
+# ======== ('DATA', '.11', code3, 0, 1)
+def code3():
+	label('.11');
+	bytes(78,111,116,32,115,117,112,112);
+	bytes(111,114,116,101,100,0);
+# ======== ('DATA', '.10', code4, 0, 1)
+def code4():
+	label('.10');
+	bytes(80,101,114,109,105,115,115,105);
+	bytes(111,110,32,100,101,110,105,101);
+	bytes(100,0);
+# ======== ('DATA', '.9', code5, 0, 1)
+def code5():
+	label('.9');
+	bytes(73,110,112,117,116,47,111,117);
+	bytes(116,112,117,116,32,101,114,114);
+	bytes(111,114,0);
+# ======== ('DATA', '.8', code6, 0, 1)
+def code6():
+	label('.8');
+	bytes(78,111,116,32,101,110,111,117);
+	bytes(103,104,32,109,101,109,111,114);
+	bytes(121,0);
+# ======== ('DATA', '.7', code7, 0, 1)
+def code7():
+	label('.7');
+	bytes(84,111,111,32,109,97,110,121);
+	bytes(32,111,112,101,110,32,102,105);
+	bytes(108,101,115,0);
+# ======== ('DATA', '.6', code8, 0, 1)
+def code8():
+	label('.6');
+	bytes(78,111,116,32,97,32,100,105);
+	bytes(114,101,99,116,111,114,121,0);
+# ======== ('DATA', '.5', code9, 0, 1)
+def code9():
+	label('.5');
+	bytes(78,111,32,115,117,99,104,32);
+	bytes(102,105,108,101,32,111,114,32);
+	bytes(100,105,114,101,99,116,111,114);
+	bytes(121,0);
+# ======== ('DATA', '.4', code10, 0, 1)
+def code10():
+	label('.4');
+	bytes(73,110,118,97,108,105,100,32);
+	bytes(97,114,103,117,109,101,110,116);
+	bytes(0);
+# ======== ('DATA', '.3', code11, 0, 1)
+def code11():
+	label('.3');
+	bytes(82,101,115,117,108,116,32,116);
+	bytes(111,111,32,108,97,114,103,101);
+	bytes(0);
+# ======== ('DATA', '.2', code12, 0, 1)
+def code12():
+	label('.2');
+	bytes(68,111,109,97,105,110,32,101);
+	bytes(114,114,111,114,0);
+# ======== ('DATA', '.1', code13, 0, 1)
+def code13():
+	label('.1');
+	bytes(85,110,107,110,111,119,110,32);
+	bytes(101,114,114,111,114,0);
+# ======== (epilog)
+code=[
+	('EXPORT', 'sys_errlist'),
+	('DATA', 'sys_errlist', code0, 0, 2),
+	('EXPORT', 'sys_nerr'),
+	('DATA', 'sys_nerr', code1, 2, 2),
+	('EXPORT', 'strerror'),
+	('CODE', 'strerror', code2),
+	('DATA', '.11', code3, 0, 1),
+	('DATA', '.10', code4, 0, 1),
+	('DATA', '.9', code5, 0, 1),
+	('DATA', '.8', code6, 0, 1),
+	('DATA', '.7', code7, 0, 1),
+	('DATA', '.6', code8, 0, 1),
+	('DATA', '.5', code9, 0, 1),
+	('DATA', '.4', code10, 0, 1),
+	('DATA', '.3', code11, 0, 1),
+	('DATA', '.2', code12, 0, 1),
+	('DATA', '.1', code13, 0, 1) ]
+module(code=code, name='../gigatron/libc/strerror.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

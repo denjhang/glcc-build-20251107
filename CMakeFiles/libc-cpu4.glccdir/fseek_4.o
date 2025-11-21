@@ -1,0 +1,104 @@
+#VCPUv4
+
+# ======== ('CODE', '_schkseek', code0)
+def code0():
+	label('_schkseek');
+	PUSH();
+	LDW(R8);PEEK();
+	STW(R19);
+	_BNE('.6');
+	LDWI('errno');STW(R23);
+	LDI(3);DOKE(R23);
+	
+	_BRA('.5');
+	label('.6');
+	LDI(2);ADDW(R8);DEEK();ADDI(6);DEEK();_BNE('.8');
+	LDWI('errno');STW(R23);
+	LDI(10);DOKE(R23);
+	
+	_BRA('.5');
+	label('.8');
+	LDI(0);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'ftell', code1)
+def code1():
+	label('ftell');
+	_PROLOGUE(16,12,0x80); # save=R7
+	LDW(R8);STW(R7);
+	STW(R8);
+	LDWI('_schkseek');CALL(vAC);
+	_BNE('.11');
+	LDW(R7);STW(R8);
+	_MOVL('.13',L9);
+	LDI(1);STW(R11);
+	LDI(2);ADDW(R7);DEEK();ADDI(6);DEEK();CALL(vAC);
+	
+	_BRA('.10');
+	label('.11');
+	_MOVL('.14',LAC);
+	label('.10');
+	_EPILOGUE(16,12,0x80);
+# ======== ('CODE', 'fseek', code2)
+def code2():
+	label('fseek');
+	_PROLOGUE(20,10,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	_MOVL(L9,L5);
+	LDW(R11);STW(R4);
+	LDW(R7);STW(R8);
+	LDWI('_schkseek');CALL(vAC);
+	_BNE('.18');
+	LDW(R7);STW(R8);
+	_MOVL(L5,L9);
+	LDW(R4);STW(R11);
+	LDI(2);ADDW(R7);DEEK();ADDI(6);DEEK();CALL(vAC);
+	LDWI('.13');_LCMPS();_BGE('.16');
+	label('.18');
+	LDWI(-1);
+	_BRA('.15');
+	label('.16');
+	LDW(R7);PEEK();ANDI(231);POKE(R7);
+	LDI(0);
+	label('.15');
+	_EPILOGUE(20,10,0xf0,saveAC=True);
+# ======== ('CODE', 'rewind', code3)
+def code3():
+	label('rewind');
+	_PROLOGUE(16,12,0x80); # save=R7
+	LDW(R8);STW(R7);
+	STW(R8);
+	_MOVL('.13',L9);
+	LDI(0);STW(R11);
+	LDWI('fseek');CALL(vAC);
+	LDW(R7);PEEK();ANDI(243);POKE(R7);
+	label('.19');
+	_EPILOGUE(16,12,0x80);
+# ======== ('DATA', '.14', code4, 0, 4)
+def code4():
+	align(4);
+	label('.14');
+	words(65535,65535); # -1
+# ======== ('DATA', '.13', code5, 0, 4)
+def code5():
+	align(4);
+	label('.13');
+	words(0,0); # 0
+# ======== (epilog)
+code=[
+	('CODE', '_schkseek', code0),
+	('EXPORT', 'ftell'),
+	('CODE', 'ftell', code1),
+	('EXPORT', 'fseek'),
+	('CODE', 'fseek', code2),
+	('EXPORT', 'rewind'),
+	('CODE', 'rewind', code3),
+	('IMPORT', 'errno'),
+	('DATA', '.14', code4, 0, 4),
+	('DATA', '.13', code5, 0, 4) ]
+module(code=code, name='../gigatron/libc/fseek.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

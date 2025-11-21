@@ -1,0 +1,67 @@
+#VCPUv4
+
+# ======== ('CODE', '_sprintf_writall', code0)
+def code0():
+	label('_sprintf_writall');
+	_PROLOGUE(20,8,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDI(2);ADDW(R0);STW(R5);
+	DEEK();
+	STW(R4);
+	_BEQ('.6');
+	LDI(2);ADDW(R5);DEEK();SUBW(R4);STW(R3);
+	_CMPWU(R6);_BLE('.8');
+	LDW(R6);STW(R3);
+	label('.8');
+	LDW(R4);STW(R8);
+	LDW(R7);STW(R9);
+	LDW(R3);STW(R10);
+	LDWI('memcpy');CALL(vAC);
+	LDW(R5);DEEK();ADDW(R3);DOKE(R5);
+	LDW(R5);DEEK();STW(R23);
+	LDI(0);POKE(R23);
+	label('.6');
+	LDW(R6);
+	label('.5');
+	_EPILOGUE(20,8,0xf8,saveAC=True);
+# ======== ('CODE', 'vsnprintf', code1)
+def code1():
+	label('vsnprintf');
+	_PROLOGUE(28,6,0xfc); # save=R2-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDW(R11);STW(R4);
+	LDW(R0);STW(R3);
+	_SP(-8+28);STW(R0);
+	LDW(R6);_BNE('.11');
+	LDI(0);STW(R7);
+	label('.11');
+	_SP(-4+28);STW(R23);
+	LDWI('_sprintf_writall');DOKE(R23);
+	_SP(-6+28);STW(R23);
+	LDW(R7);DOKE(R23);
+	_SP(-2+28);STW(R23);
+	LDW(R6);ADDW(R7);SUBI(-v(-1));DOKE(R23);
+	LDW(R5);STW(R8);
+	LDW(R4);STW(R9);
+	LDWI('_doprint');CALL(vAC);
+	STW(R2);
+	LDW(R3);STW(R0);
+	LDW(R2);
+	label('.10');
+	_EPILOGUE(28,6,0xfc,saveAC=True);
+# ======== (epilog)
+code=[
+	('CODE', '_sprintf_writall', code0),
+	('EXPORT', 'vsnprintf'),
+	('CODE', 'vsnprintf', code1),
+	('IMPORT', '_doprint'),
+	('IMPORT', 'memcpy') ]
+module(code=code, name='../gigatron/libc/vsnprintf.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

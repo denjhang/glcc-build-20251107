@@ -1,0 +1,46 @@
+#VCPUv4
+
+# ======== ('CODE', 'gets', code0)
+def code0():
+	label('gets');
+	_PROLOGUE(12,2,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	STW(R5);
+	LDWI('_iob0');STW(R4);
+	_BRA('.7');
+	label('.6');
+	LDW(R5);STW(R23);
+	ADDI(1);STW(R5);
+	LDW(R6);POKE(R23);
+	label('.7');
+	LDW(R4);STW(R8);
+	LDWI('fgetc');CALL(vAC);STW(R23);
+	STW(R6);
+	LDWI(-1);XORW(R23);_BEQ('.9');
+	LDW(R6);XORI(10);_BNE('.6');
+	label('.9');
+	LDI(0);POKE(R5);
+	LDW(R4);PEEK();ANDI(4);_BEQ('.10');
+	LDI(0);
+	_BRA('.5');
+	label('.10');
+	LDW(R4);PEEK();ANDI(8);_BEQ('.12');
+	LDW(R5);XORW(R7);_BNE('.12');
+	LDI(0);
+	_BRA('.5');
+	label('.12');
+	LDW(R7);
+	label('.5');
+	_EPILOGUE(12,2,0xf0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'gets'),
+	('CODE', 'gets', code0),
+	('IMPORT', 'fgetc'),
+	('IMPORT', '_iob0') ]
+module(code=code, name='../gigatron/libc/gets.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

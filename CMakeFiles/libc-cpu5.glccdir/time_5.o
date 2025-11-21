@@ -1,0 +1,29 @@
+#VCPUv5
+
+# ======== ('CODE', 'time', code0)
+def code0():
+	label('time');
+	_PROLOGUE(8,0,0x0); # save=None
+	_MOVL('.4',[SP,-4+8]);
+	LDW(R8);_BEQ('.5');
+	STW(T2);_MOVL([SP,-4+8],[T2]);
+	label('.5');
+	_SP(-4+8);_MOVL([vAC],LAC);
+	label('.3');
+	_EPILOGUE(8,0,0x0);
+# ======== ('DATA', '.4', code1, 0, 4)
+def code1():
+	align(4);
+	label('.4');
+	words(0,0); # 0
+# ======== (epilog)
+code=[
+	('EXPORT', 'time'),
+	('CODE', 'time', code0),
+	('DATA', '.4', code1, 0, 4) ]
+module(code=code, name='../gigatron/libc/time.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

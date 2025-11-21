@@ -1,0 +1,33 @@
+#VCPUv7
+
+# ======== ('CODE', 'calloc', code0)
+def code0():
+	label('calloc');
+	_PROLOGUE(16,6,0xf0); # save=R4-7
+	MOVW(R8,R7);
+	LDW(R9);STW(R6);
+	LDW(R7);_MUL(R6);STW(R5);
+	STW(R8);
+	CALLI('malloc');
+	STW(R4);
+	_BEQ('.4');
+	MOVW(R4,R8);
+	MOVQW(0,R9);
+	MOVW(R5,R10);
+	CALLI('memset');
+	label('.4');
+	LDW(R4);
+	label('.3');
+	_EPILOGUE(16,6,0xf0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'calloc'),
+	('CODE', 'calloc', code0),
+	('IMPORT', 'memset'),
+	('IMPORT', 'malloc') ]
+module(code=code, name='../gigatron/libc/calloc.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,41 @@
+#VCPUv7
+
+# ======== ('DATA', '__glink_magic_bss', code0, 2, 2)
+def code0():
+	align(2);
+	label('__glink_magic_bss');
+	words(48879);
+# ======== ('CODE', '_init_bss', code1)
+def code1():
+	label('_init_bss');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	LDWI('__glink_magic_bss');DEEKA(R7);
+	_BRA('.3');
+	label('.2');
+	LDI(2);ADDW(R7);DEEKA(R6);
+	LDWI('__glink_magic_bss');DOKEQ(0);
+	MOVW(R7,R8);
+	MOVQW(0,R9);
+	DEEKV(R7);STW(R10);
+	CALLI('memset');
+	MOVW(R6,R7);
+	label('.3');
+	LDW(R7);STW(R23);
+	_BEQ('.5');
+	LDWI(0xbeef);XORW(R23);_BNE('.2');
+	label('.5');
+	label('.1');
+	_EPILOGUE(12,6,0xc0);
+# ======== (epilog)
+code=[
+	('EXPORT', '__glink_magic_bss'),
+	('DATA', '__glink_magic_bss', code0, 2, 2),
+	('EXPORT', '_init_bss'),
+	('CODE', '_init_bss', code1),
+	('IMPORT', 'memset') ]
+module(code=code, name='../gigatron/libc/_init1.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

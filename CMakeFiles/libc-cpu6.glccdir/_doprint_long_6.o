@@ -1,0 +1,46 @@
+#VCPUv6
+
+# ======== ('CODE', '_doprint_long_imp', code0)
+def code0():
+	label('_doprint_long_imp');
+	_PROLOGUE(40,10,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDWI(0xfffc);STW(R23);
+	DEEKV(R5);ADDI(7);ANDW(R23);STW(R23);
+	DOKE(R5);
+	_SP(-4+40);STW(T2);LDW(R23);SUBI(-v(-4));_MOVL([vAC],[T2]);
+	LDW(R6);XORI(11);_BNE('.8');
+	_MOVL([SP,-4+40],L8);
+	_SP(-5+40);STW(R10);
+	MOVQW(10,R11);
+	CALLI('_ltoa');
+	STW(R4);
+	_BRA('.9');
+	label('.8');
+	_MOVL([SP,-4+40],L8);
+	_SP(-5+40);STW(R10);
+	LDW(R6);STW(R11);
+	CALLI('_ultoa');
+	STW(R4);
+	label('.9');
+	LDW(R7);STW(R8);
+	LDW(R6);STW(R9);
+	LDW(R4);STW(R10);
+	CALLI('_doprint_num');
+	label('.5');
+	_EPILOGUE(40,10,0xf0);
+# ======== (epilog)
+code=[
+	('EXPORT', '_doprint_long_imp'),
+	('CODE', '_doprint_long_imp', code0),
+	('IMPORT', '_doprint_num'),
+	('IMPORT', '_ultoa'),
+	('IMPORT', '_ltoa') ]
+module(code=code, name='../gigatron/libc/_doprint_long.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

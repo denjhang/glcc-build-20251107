@@ -1,0 +1,29 @@
+#VCPUv7
+
+# ======== ('DATA', 'console_state', code0, 6, 1)
+def code0():
+	label('console_state');
+	words(16160); # 16160
+	bytes(0); # 0
+	bytes(0); # 0
+	bytes(1); # 1
+	bytes(1); # 1
+# ======== ('DATA', '__glink_magic_init', code1, 4, 2)
+def code1():
+	align(2);
+	label('__glink_magic_init');
+	words('_console_setup');
+	words(0);
+# ======== (epilog)
+code=[
+	('EXPORT', 'console_state'),
+	('DATA', 'console_state', code0, 6, 1),
+	('PLACE', 'console_state', 0x0, 0xff),
+	('DATA', '__glink_magic_init', code1, 4, 2),
+	('IMPORT', '_console_setup') ]
+module(code=code, name='../gigatron/libc/cons_state.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,258 @@
+#VCPUv5
+
+# ======== ('CODE', '_strtol_push', code0)
+def code0():
+	label('_strtol_push');
+	PUSH();
+	LDI(0);STW(R19);
+	LDI(2);ADDW(R8);DEEK();STW(R18);
+	LDW(R8);DEEK();STW(R17);
+	_BNE('.6');
+	LDW(R9);XORI(45);_BNE('.8');
+	LDI(1);STW(R17);
+	_BRA('.10');
+	label('.8');
+	LDW(R9);XORI(43);_BNE('.11');
+	LDI(2);STW(R17);
+	_BRA('.10');
+	label('.11');
+	label('.6');
+	LDW(R18);_BNE('.13');
+	LDW(R17);ANDI(4);_BEQ('.15');
+	LDW(R9);ORI(32);XORI(120);_BNE('.17');
+	LDI(2);ADDW(R8);STW(R23);
+	LDI(16);DOKE(R23);
+	STW(R18);
+	_BRA('.10');
+	label('.17');
+	LDW(R17);ORI(8);STW(R17);
+	LDI(2);ADDW(R8);STW(R23);
+	LDI(8);DOKE(R23);
+	STW(R18);
+	_BRA('.16');
+	label('.15');
+	LDW(R9);XORI(48);_BNE('.19');
+	LDW(R17);ORI(4);STW(R17);
+	_BRA('.10');
+	label('.19');
+	LDI(2);ADDW(R8);STW(R23);
+	LDI(10);DOKE(R23);
+	STW(R18);
+	label('.16');
+	label('.13');
+	LDW(R9);SUBI(48);
+	STW(R19);
+	_CMPIS(9);_BLE('.21');
+	LDW(R9);ORI(32);SUBI(97);
+	STW(R19);
+	_BLT('.23');
+	LDI(10);ADDW(R19);STW(R19);
+	label('.23');
+	label('.21');
+	LDW(R19);_BLT('.27');
+	SUBW(R18);_BLT('.25');
+	label('.27');
+	LDI(0);
+	_BRA('.5');
+	label('.25');
+	LDW(R17);ORI(8);STW(R17);
+	LDI(4);ADDW(R8);STW(R16);
+	LDI(3);ADDW(R16);STW(R15);
+	PEEK();STW(R14);
+	LDI(0);POKE(R15);
+	LDW(R19);_STLU(L22);
+	LDW(R18);_STLU(LAC);LDW(R16);_LMUL();LDI(L22);_LADD();LDW(R16);_MOVL(LAC,[vAC]);
+	LDW(R15);PEEK();STW(R23);
+	LDW(R14);_MUL(R18);ADDW(R23);STW(R14);
+	POKE(R15);
+	LD(R14);XORW(R14);_BEQ('.28');
+	LDW(R17);ORI(128);STW(R17);
+	LDW(R16);STW(T2);_MOVL('.30',[T2]);
+	label('.28');
+	label('.10');
+	LDW(R17);DOKE(R8);
+	
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '_strtol_decode_u', code1)
+def code1():
+	label('_strtol_decode_u');
+	PUSH();
+	LDW(R8);DEEK();ANDI(8);_BNE('.32');
+	LDI(0);
+	_BRA('.31');
+	label('.32');
+	LDW(R8);DEEK();ANDI(128);_BEQ('.34');
+	LDWI('errno');STW(R23);
+	LDI(2);DOKE(R23);
+	_BRA('.35');
+	label('.34');
+	LDW(R8);DEEK();ANDI(1);_BEQ('.36');
+	LDI(4);ADDW(R8);STW(R23);
+	_MOVL([vAC],LAC);_LNEG();LDW(R23);_MOVL(LAC,[vAC]);
+	label('.36');
+	label('.35');
+	LDW(R9);_BEQ('.38');
+	STW(T2);LDI(4);ADDW(R8);_MOVL([vAC],[T2]);
+	label('.38');
+	LDI(1);
+	label('.31');
+	tryhop(2);POP();RET()
+# ======== ('DATA', '.41', code2, 4, 4)
+def code2():
+	align(4);
+	label('.41');
+	words(0,32768); # 2147483648
+# ======== ('DATA', '.42', code3, 4, 4)
+def code3():
+	align(4);
+	label('.42');
+	words(65535,32767); # 2147483647
+# ======== ('CODE', '_strtol_decode_s', code4)
+def code4():
+	label('_strtol_decode_s');
+	PUSH();
+	LDWI('.42');STW(R19);
+	LDI(4);ADDW(R8);STW(R18);
+	LDW(R8);DEEK();ANDI(8);_BNE('.43');
+	LDI(0);
+	_BRA('.40');
+	label('.43');
+	LDW(R8);DEEK();ANDI(1);_BEQ('.45');
+	LDWI('.41');STW(R19);
+	label('.45');
+	LDW(R8);DEEK();ANDI(128);_BNE('.49');
+	LDW(R18);_MOVL([vAC],LAC);LDW(R19);_LCMPU();_BLE('.47');
+	label('.49');
+	LDWI('errno');STW(R23);
+	LDI(2);DOKE(R23);
+	LDW(R18);STW(T2);LDW(R19);_MOVL([vAC],[T2]);
+	_BRA('.48');
+	label('.47');
+	LDW(R8);DEEK();ANDI(1);_BEQ('.50');
+	LDW(R18);_MOVL([vAC],LAC);_LNEG();LDW(R18);_MOVL(LAC,[vAC]);
+	label('.50');
+	label('.48');
+	LDW(R9);_BEQ('.52');
+	LDW(R18);_MOVL([vAC],LAC);LDW(R9);_MOVL(LAC,[vAC]);
+	label('.52');
+	LDI(1);
+	label('.40');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'worker', code5)
+def code5():
+	label('worker');
+	_PROLOGUE(12,4,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	_MOVL('_lzero',LAC);LDI(4);ADDW(R7);_MOVL(LAC,[vAC]);
+	LDI(0);DOKE(R7);
+	LDI(2);ADDW(R7);STW(R23);
+	LDW(R5);DOKE(R23);
+	_BRA('.56');
+	label('.55');
+	LDI(1);ADDW(R6);STW(R6);
+	label('.56');
+	LDW(R6);PEEK();STW(R8);
+	CALLI('isspace');
+	_BNE('.55');
+	_BRA('.59');
+	label('.58');
+	LDI(1);ADDW(R6);STW(R6);
+	label('.59');
+	LDW(R7);STW(R8);
+	LDW(R6);PEEK();STW(R9);
+	CALLI('_strtol_push');
+	_BNE('.58');
+	LDW(R6);
+	label('.54');
+	_EPILOGUE(12,4,0xe0,saveAC=True);
+# ======== ('CODE', 'strtoul', code6)
+def code6():
+	label('strtoul');
+	_PROLOGUE(32,8,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	_SP(-12+32);STW(R4);
+	STW(R8);
+	LDW(R7);STW(R9);
+	LDW(R5);STW(R10);
+	CALLI('worker');
+	STW(R3);
+	_MOVL('_lzero',LAC);_MOVL(LAC,[SP,-4+32]);
+	LDW(R4);STW(R8);
+	_SP(-4+32);STW(R9);
+	CALLI('_strtol_decode_u');
+	_BNE('.62');
+	LDW(R7);STW(R3);
+	label('.62');
+	LDW(R6);_BEQ('.64');
+	LDW(R3);DOKE(R6);
+	label('.64');
+	_MOVL([SP,-4+32],LAC);
+	label('.61');
+	_EPILOGUE(32,8,0xf8);
+# ======== ('CODE', 'strtol', code7)
+def code7():
+	label('strtol');
+	_PROLOGUE(32,8,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	_SP(-12+32);STW(R4);
+	STW(R8);
+	LDW(R7);STW(R9);
+	LDW(R5);STW(R10);
+	CALLI('worker');
+	STW(R3);
+	_MOVL('.67',[SP,-4+32]);
+	LDW(R4);STW(R8);
+	_SP(-4+32);STW(R9);
+	CALLI('_strtol_decode_s');
+	_BNE('.68');
+	LDW(R7);STW(R3);
+	label('.68');
+	LDW(R6);_BEQ('.70');
+	LDW(R3);DOKE(R6);
+	label('.70');
+	_SP(-4+32);_MOVL([vAC],LAC);
+	label('.66');
+	_EPILOGUE(32,8,0xf8);
+# ======== ('DATA', '.67', code8, 0, 4)
+def code8():
+	align(4);
+	label('.67');
+	words(0,0); # 0
+# ======== ('DATA', '.30', code9, 0, 4)
+def code9():
+	align(4);
+	label('.30');
+	words(65535,65535); # 4294967295
+# ======== (epilog)
+code=[
+	('EXPORT', '_strtol_push'),
+	('CODE', '_strtol_push', code0),
+	('EXPORT', '_strtol_decode_u'),
+	('CODE', '_strtol_decode_u', code1),
+	('DATA', '.41', code2, 4, 4),
+	('DATA', '.42', code3, 4, 4),
+	('EXPORT', '_strtol_decode_s'),
+	('CODE', '_strtol_decode_s', code4),
+	('CODE', 'worker', code5),
+	('EXPORT', 'strtoul'),
+	('CODE', 'strtoul', code6),
+	('EXPORT', 'strtol'),
+	('CODE', 'strtol', code7),
+	('IMPORT', '_lzero'),
+	('IMPORT', 'errno'),
+	('IMPORT', 'isspace'),
+	('DATA', '.67', code8, 0, 4),
+	('DATA', '.30', code9, 0, 4) ]
+module(code=code, name='../gigatron/libc/strtol.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

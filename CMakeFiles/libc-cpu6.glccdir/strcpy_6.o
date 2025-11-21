@@ -1,0 +1,32 @@
+#VCPUv6
+
+# ======== ('CODE', 'strcpy', code0)
+def code0():
+	label('strcpy');
+	_PROLOGUE(16,8,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	STW(R8);
+	MOVQW(0,R9);
+	LDWI(0xffff);STW(R10);
+	CALLI('__memchr2');
+	STW(R5);
+	LDW(R7);STW(R8);
+	LDW(R6);STW(R9);
+	LDW(R5);SUBW(R6);ADDI(1);STW(R10);
+	CALLI('memcpy');
+	LDW(R7);
+	label('.3');
+	_EPILOGUE(16,8,0xe0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'strcpy'),
+	('CODE', 'strcpy', code0),
+	('IMPORT', '__memchr2'),
+	('IMPORT', 'memcpy') ]
+module(code=code, name='../gigatron/libc/strcpy.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

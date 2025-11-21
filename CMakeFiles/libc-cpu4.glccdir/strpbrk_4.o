@@ -1,0 +1,30 @@
+#VCPUv4
+
+# ======== ('CODE', 'strpbrk', code0)
+def code0():
+	label('strpbrk');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R7);STW(R8);
+	LDW(R6);STW(R9);
+	LDWI('strcspn');CALL(vAC);
+	ADDW(R7);STW(R7);
+	PEEK();_BEQ('.2');
+	LDW(R7);
+	_BRA('.1');
+	label('.2');
+	LDI(0);
+	label('.1');
+	_EPILOGUE(12,6,0xc0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'strpbrk'),
+	('CODE', 'strpbrk', code0),
+	('IMPORT', 'strcspn') ]
+module(code=code, name='../gigatron/libc/strpbrk.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

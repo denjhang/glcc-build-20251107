@@ -1,0 +1,31 @@
+#VCPUv6
+
+# ======== ('CODE', 'isxdigit', code0)
+def code0():
+	label('isxdigit');
+	PUSH();
+	LDW(R8);SUBI(48);_BLT('.6');
+	LDW(R8);SUBI(57);_BLE('.5');
+	label('.6');
+	LDW(R8);ORI(32);STW(R23);
+	SUBI(97);_BLT('.3');
+	LDW(R23);SUBI(122);_BGT('.3');
+	label('.5');
+	MOVQW(1,R19);
+	_BRA('.4');
+	label('.3');
+	MOVQW(0,R19);
+	label('.4');
+	LDW(R19);
+	label('.1');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'isxdigit'),
+	('CODE', 'isxdigit', code0) ]
+module(code=code, name='../gigatron/libc/isxdigit.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

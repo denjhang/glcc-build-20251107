@@ -1,0 +1,41 @@
+#VCPUv7
+
+# ======== ('CODE', '_doprint_double_imp', code0)
+def code0():
+	label('_doprint_double_imp');
+	_PROLOGUE(96,14,0xf8); # save=R3-7
+	MOVW(R8,R7);
+	LDW(R9);STW(R6);
+	DEEK();ADDI(5);STW(R23);
+	DOKE(R6);
+	_SP(-5+96);STW(T2);LDW(R23);SUBI(-v(-5));_MOVF([vAC],[T2]);
+	PEEKV(R7);STW(R5);
+	LDI(4);ADDW(R7);DEEKA(R4);
+	LDW(R5);ANDI(128);_BNE('.8');
+	MOVQW(6,R4);
+	label('.8');
+	_MOVF([SP,-5+96],F8);
+	_SP(-69+96);STW(R11);
+	LDI(1);ADDW(R7);PEEK();ORI(32);STW(R12);
+	MOVW(R4,R13);
+	CALLI('dtoa');
+	STW(R3);
+	LDWI(-129);ANDW(R5);POKE(R7);
+	MOVW(R7,R8);
+	MOVQW(129,R9);
+	MOVW(R3,R10);
+	CALLI('_doprint_num');
+	label('.5');
+	_EPILOGUE(96,14,0xf8);
+# ======== (epilog)
+code=[
+	('EXPORT', '_doprint_double_imp'),
+	('CODE', '_doprint_double_imp', code0),
+	('IMPORT', '_doprint_num'),
+	('IMPORT', 'dtoa') ]
+module(code=code, name='../gigatron/libc/_doprint_double.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

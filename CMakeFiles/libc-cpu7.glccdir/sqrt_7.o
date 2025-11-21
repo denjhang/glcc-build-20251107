@@ -1,0 +1,71 @@
+#VCPUv7
+
+# ======== ('CODE', 'sqrt', code0)
+def code0():
+	label('sqrt');
+	_PROLOGUE(28,10,0xfe); # save=R1-7
+	_MOVF(F8,F5);
+	_MOVF(F5,FAC);LDWI('_fzero');_FCMP();_BGT('.4');
+	LDWI('_fzero');_FCMP();_BNE('.6');
+	_MOVF('_fzero',FAC);
+	_BRA('.3');
+	label('.6');
+	LDWI('errno');DOKEQ(1);
+	_MOVF('_fminus',F8);
+	CALLI('_fexception');
+	
+	_BRA('.3');
+	label('.4');
+	_MOVF(F5,F8);
+	_SP(-2+28);STW(R11);
+	CALLI('frexp');
+	_MOVF(FAC,F2);
+	_MOVF(F2,FAC);LDWI('.8');_FMUL();LDWI('.9');_FADD();_MOVF(FAC,F2);
+	_LDLW(-2+28);ANDI(1);_BEQ('.10');
+	LDWI('.12');_FMUL();_MOVF(FAC,F2);
+	label('.10');
+	_MOVF(F2,F8);
+	_LDLW(-2+28);_SHRIS(1);STW(R11);
+	CALLI('ldexp');
+	_MOVF(FAC,F2);
+	MOVQW(3,R1);
+	label('.13');
+	_MOVF(F5,FAC);LDI(F2);_FDIV();LDI(F2);_FADD();LDWI('_fhalf');_FMUL();_MOVF(FAC,F2);
+	label('.14');
+	ADDSV(-1,R1);
+	LDW(R1);_BNE('.13');
+	_MOVF(F2,FAC);
+	label('.3');
+	_EPILOGUE(28,10,0xfe);
+# ======== ('DATA', '.12', code1, 0, 1)
+def code1():
+	label('.12');
+	bytes(129,53,4,243,52); # 1.41421
+# ======== ('DATA', '.9', code2, 0, 1)
+def code2():
+	label('.9');
+	bytes(127,85,169,87,122); # 0.417308
+# ======== ('DATA', '.8', code3, 0, 1)
+def code3():
+	label('.8');
+	bytes(128,23,20,220,121); # 0.590162
+# ======== (epilog)
+code=[
+	('EXPORT', 'sqrt'),
+	('CODE', 'sqrt', code0),
+	('IMPORT', '_fexception'),
+	('IMPORT', '_fminus'),
+	('IMPORT', '_fhalf'),
+	('IMPORT', '_fzero'),
+	('IMPORT', 'errno'),
+	('IMPORT', 'ldexp'),
+	('IMPORT', 'frexp'),
+	('DATA', '.12', code1, 0, 1),
+	('DATA', '.9', code2, 0, 1),
+	('DATA', '.8', code3, 0, 1) ]
+module(code=code, name='../gigatron/libc/sqrt.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,74 @@
+#VCPUv7
+
+# ======== ('CODE', 'signal', code0)
+def code0():
+	label('signal');
+	PUSH();
+	LDWI(0xfff8);ANDW(R8);_BNE('.12');
+	LDWI(0xffff);XORW(R9);_BNE('.10');
+	label('.12');
+	LDWI(0xffff);
+	_BRA('.9');
+	label('.10');
+	LDWI('sigvec');ADDW(R8);ADDW(R8);STW(R23);
+	DEEK();STW(R19);
+	LDW(R9);DOKE(R23);
+	LDWI('_raise_disposition');DOKEI('_raise_emits_signal');
+	LDW(R19);
+	label('.9');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '_sigcall', code1)
+def code1():
+	label('_sigcall');
+	_PROLOGUE(16,4,0xf8); # save=R3-7
+	LDW(R8);ST(R7);
+	LDW(R9);ST(R6);
+	MOVW(R10,R5);
+	MOVIW('sigvec',R4);
+	LD(R7);ANDI(7);ST(R7);
+	LD(R7);LSLW();ADDW(R4);DEEKA(R3);
+	LDW(R3);XORI(1);_BNE('.14');
+	LD(R7);ANDI(4);_BEQ('.14');
+	LDI(0);
+	_BRA('.13');
+	label('.14');
+	LDWI(0xfffe);ANDW(R3);_BEQ('.16');
+	LD(R7);LSLW();ADDW(R4);DOKEQ(0);
+	LD(R7);ANDI(4);_BEQ('.18');
+	LD(R7);STW(R8);
+	LD(R6);STW(R9);
+	CALL(R3);
+	
+	_BRA('.13');
+	label('.18');
+	LD(R7);STW(R8);
+	LD(R6);STW(R9);
+	CALL(R3);
+	label('.16');
+	MOVQW(20,R8);
+	MOVW(R5,R9);
+	CALLI('_exitm');
+	LDWI(-1);
+	label('.13');
+	_EPILOGUE(16,4,0xf8,saveAC=True);
+# ======== ('BSS', 'sigvec', code2, 16, 2)
+def code2():
+	align(2);
+	label('sigvec');
+	space(16);
+# ======== (epilog)
+code=[
+	('EXPORT', 'signal'),
+	('CODE', 'signal', code0),
+	('EXPORT', '_sigcall'),
+	('CODE', '_sigcall', code1),
+	('BSS', 'sigvec', code2, 16, 2),
+	('IMPORT', '_raise_emits_signal'),
+	('IMPORT', '_raise_disposition'),
+	('IMPORT', '_exitm') ]
+module(code=code, name='../gigatron/libc/signal.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

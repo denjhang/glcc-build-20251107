@@ -1,0 +1,85 @@
+#VCPUv7
+
+# ======== ('CODE', '_YYnull', code0)
+def code0():
+	label('_YYnull');
+	_PROLOGUE(28,6,0xfc); # save=R2-7
+	MOVW(R8,R7);
+	MOVW(R9,R6);
+	MOVIW('msg',R5);
+	MOVW(R7,R8);
+	MOVQW(47,R9);
+	CALLI('strrchr');
+	STW(R4);
+	LDW(R5);_BEQ('.5');
+	LDI(1);ADDW(R5);STW(R2);
+	_BRA('.6');
+	label('.5');
+	MOVW(R7,R2);
+	label('.6');
+	LDW(R2);_STLW(-8+28);
+	LDWI('.8');_STLW(-6+28);
+	MOVW(R6,R8);
+	MOVIW(v('buf')+7,R9);
+	MOVQW(10,R10);
+	CALLI('_utoa');
+	_STLW(-4+28);
+	LDWI('.12');_STLW(-2+28);
+	MOVQW(0,R3);
+	label('.13');
+	_SP(-8+28);ADDW(R3);ADDW(R3);DEEKA(R4);
+	_BRA('.20');
+	label('.17');
+	LDWI(v('msg')+26);XORW(R5);_BEQ('.21');
+	LDW(R5);STW(R23);
+	INCV(R5);
+	PEEKV(R4);POKE(R23);
+	label('.21');
+	label('.18');
+	INCV(R4);
+	label('.20');
+	PEEKV(R4);_BNE('.17');
+	label('.14');
+	INCV(R3);
+	LDW(R3);XORI(4);_BNE('.13');
+	LDW(R5);
+	INCV(R5);
+	POKEQ(0);
+	MOVIW('msg',R8);
+	CALLI('_assertfail');
+	label('.3');
+	_EPILOGUE(28,6,0xfc);
+# ======== ('BSS', 'buf', code1, 8, 1)
+def code1():
+	label('buf');
+	space(8);
+# ======== ('BSS', 'msg', code2, 27, 1)
+def code2():
+	label('msg');
+	space(27);
+# ======== ('DATA', '.12', code3, 0, 1)
+def code3():
+	label('.12');
+	bytes(58,32,110,117,108,108,32,99);
+	bytes(104,101,99,107,0);
+# ======== ('DATA', '.8', code4, 0, 1)
+def code4():
+	label('.8');
+	bytes(58,0);
+# ======== (epilog)
+code=[
+	('EXPORT', '_YYnull'),
+	('CODE', '_YYnull', code0),
+	('BSS', 'buf', code1, 8, 1),
+	('BSS', 'msg', code2, 27, 1),
+	('IMPORT', '_utoa'),
+	('IMPORT', 'strrchr'),
+	('IMPORT', '_assertfail'),
+	('DATA', '.12', code3, 0, 1),
+	('DATA', '.8', code4, 0, 1) ]
+module(code=code, name='../gigatron/libc/_lcc_yynull.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

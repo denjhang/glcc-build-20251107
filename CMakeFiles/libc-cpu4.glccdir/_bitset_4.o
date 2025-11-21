@@ -1,0 +1,91 @@
+#VCPUv4
+
+# ======== ('DATA', '_mask', code0, 8, 1)
+def code0():
+	label('_mask');
+	bytes(1,2);
+	bytes(4,8);
+	bytes(16,32);
+	bytes(64,128);
+# ======== ('CODE', '_bitset_clear', code1)
+def code1():
+	label('_bitset_clear');
+	PUSH();
+	LDI(0);STW(R19);
+	_BRA('.7');
+	label('.4');
+	LDW(R19);ADDW(R8);STW(R23);
+	LDI(0);POKE(R23);
+	label('.5');
+	LDI(1);ADDW(R19);STW(R19);
+	label('.7');
+	LDW(R19);XORW(R9);_BNE('.4');
+	label('.3');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '_bitset_compl', code2)
+def code2():
+	label('_bitset_compl');
+	PUSH();
+	LDI(0);STW(R19);
+	_BRA('.12');
+	label('.9');
+	LDW(R19);ADDW(R8);STW(R23);
+	PEEK();XORI(255);POKE(R23);
+	label('.10');
+	LDI(1);ADDW(R19);STW(R19);
+	label('.12');
+	LDW(R19);XORW(R9);_BNE('.9');
+	label('.8');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '_bitset_set', code3)
+def code3():
+	label('_bitset_set');
+	PUSH();
+	LDW(R9);_SHRIU(3);ADDW(R8);STW(R19);
+	LDWI('_mask');STW(R23);
+	LDW(R9);ANDI(7);ADDW(R23);PEEK();STW(R18);
+	LD(R18);STW(R23);
+	LDW(R19);PEEK();ORW(R23);POKE(R19);
+	label('.13');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '_bitset_clr', code4)
+def code4():
+	label('_bitset_clr');
+	PUSH();
+	LDW(R9);_SHRIU(3);ADDW(R8);STW(R19);
+	LDWI('_mask');STW(R23);
+	LDW(R9);ANDI(7);ADDW(R23);PEEK();STW(R18);
+	LD(R18);XORI(255);STW(R23);
+	LDW(R19);PEEK();ANDW(R23);POKE(R19);
+	label('.14');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '_bitset_test', code5)
+def code5():
+	label('_bitset_test');
+	PUSH();
+	LDW(R9);_SHRIU(3);ADDW(R8);STW(R19);
+	LDWI('_mask');STW(R23);
+	LDW(R9);ANDI(7);ADDW(R23);PEEK();STW(R18);
+	LD(R18);STW(R23);
+	LDW(R19);PEEK();ANDW(R23);
+	label('.15');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('DATA', '_mask', code0, 8, 1),
+	('EXPORT', '_bitset_clear'),
+	('CODE', '_bitset_clear', code1),
+	('EXPORT', '_bitset_compl'),
+	('CODE', '_bitset_compl', code2),
+	('EXPORT', '_bitset_set'),
+	('CODE', '_bitset_set', code3),
+	('EXPORT', '_bitset_clr'),
+	('CODE', '_bitset_clr', code4),
+	('EXPORT', '_bitset_test'),
+	('CODE', '_bitset_test', code5) ]
+module(code=code, name='../gigatron/libc/_bitset.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

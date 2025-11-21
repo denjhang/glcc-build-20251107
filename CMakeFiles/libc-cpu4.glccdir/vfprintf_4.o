@@ -1,0 +1,43 @@
+#VCPUv4
+
+# ======== ('CODE', 'vfprintf', code0)
+def code0():
+	label('vfprintf');
+	_PROLOGUE(24,6,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDW(R0);STW(R4);
+	LDWI(-1);STW(R3);
+	_SP(-6+24);STW(R0);
+	_SP(-4+24);STW(R23);
+	LDW(R7);DOKE(R23);
+	STW(R8);
+	LDWI('_schkwrite');CALL(vAC);STW(R23);
+	_SP(-2+24);STW(R22);
+	LDW(R23);DOKE(R22);
+	_BEQ('.7');
+	LDW(R6);STW(R8);
+	LDW(R5);STW(R9);
+	LDWI('_doprint');CALL(vAC);
+	STW(R3);
+	LDW(R7);PEEK();ANDI(4);_BEQ('.10');
+	LDWI(-1);STW(R3);
+	label('.10');
+	label('.7');
+	LDW(R4);STW(R0);
+	LDW(R3);
+	label('.5');
+	_EPILOGUE(24,6,0xf8,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'vfprintf'),
+	('CODE', 'vfprintf', code0),
+	('IMPORT', '_doprint'),
+	('IMPORT', '_schkwrite') ]
+module(code=code, name='../gigatron/libc/vfprintf.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,48 @@
+#VCPUv4
+
+# ======== ('DATA', 'console_info', code0, 20, 2)
+def code0():
+	align(2);
+	label('console_info');
+	words(15); # 15
+	words(26); # 26
+	bytes(0,16);
+	bytes(32,48);
+	bytes(64,80);
+	bytes(96,112);
+	bytes(128,144);
+	bytes(160,176);
+	bytes(192,208);
+	bytes(224);
+	space(1);
+# ======== ('CODE', '_console_reset', code1)
+def code1():
+	label('_console_reset');
+	_PROLOGUE(12,6,0x80); # save=R7
+	LDW(R8);STW(R7);
+	LDWI('_con128ksetup');CALL(vAC);
+	_SP(-2+12);STW(R23);
+	LDWI('videoTable');PEEK();ST(vACH);ORI(255);XORI(255);DOKE(R23);
+	LDW(R7);_BLT('.16');
+	_SP(-2+12);DEEK();STW(R8);
+	LDW(R7);STW(R9);
+	LDI(120);STW(R10);
+	LDWI('_console_clear');CALL(vAC);
+	label('.16');
+	label('.15');
+	_EPILOGUE(12,6,0x80);
+# ======== (epilog)
+code=[
+	('EXPORT', 'console_info'),
+	('DATA', 'console_info', code0, 20, 2),
+	('EXPORT', '_console_reset'),
+	('CODE', '_console_reset', code1),
+	('IMPORT', '_con128ksetup'),
+	('IMPORT', 'videoTable'),
+	('IMPORT', '_console_clear') ]
+module(code=code, name='../gigatron/map128k/libcon1/cons_geom.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

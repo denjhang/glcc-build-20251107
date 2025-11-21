@@ -1,0 +1,37 @@
+#VCPUv4
+
+# ======== ('CODE', 'ungetc', code0)
+def code0():
+	label('ungetc');
+	_PROLOGUE(12,4,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	STW(R8);
+	LDWI('_schkread');CALL(vAC);
+	_BEQ('.6');
+	LDW(R7);_BLT('.6');
+	LDW(R6);PEEK();
+	STW(R5);
+	ANDI(16);_BNE('.8');
+	LDW(R5);ORI(16);ANDI(247);POKE(R6);
+	LDW(R7);ST(R23);
+	LDI(1);ADDW(R6);STW(R22);
+	LDW(R23);POKE(R22);
+	LD(R23);
+	_BRA('.5');
+	label('.8');
+	label('.6');
+	LDWI(-1);
+	label('.5');
+	_EPILOGUE(12,4,0xe0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'ungetc'),
+	('CODE', 'ungetc', code0),
+	('IMPORT', '_schkread') ]
+module(code=code, name='../gigatron/libc/ungetc.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

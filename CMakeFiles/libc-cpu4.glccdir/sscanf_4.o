@@ -1,0 +1,62 @@
+#VCPUv4
+
+# ======== ('CODE', '_sread', code0)
+def code0():
+	label('_sread');
+	PUSH();
+	LDI(4);ADDW(R8);STW(R18);
+	DEEK();
+	_BEQ('.9');
+	PEEK();
+	STW(R19);
+	_BNE('.7');
+	label('.9');
+	LDI(0);
+	_BRA('.6');
+	label('.7');
+	LDW(R19);POKE(R9);
+	LDW(R18);DEEK();ADDI(1);DOKE(R18);
+	LDI(1);
+	label('.6');
+	tryhop(2);POP();RET()
+# ======== ('DATA', '_sscanf_iovec', code1, 8, 2)
+def code1():
+	align(2);
+	label('_sscanf_iovec');
+	words(0);
+	words('_sread');
+	space(4);
+# ======== ('CODE', 'sscanf', code2)
+def code2():
+	label('sscanf');
+	_PROLOGUE(20,6,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	_SP(2+20);STW(R23);
+	LDW(R9);DOKE(R23);
+	_SP(-6+20);STW(R6);
+	LDI(129);POKE(R6);
+	LDI(2);ADDW(R6);STW(R23);
+	LDWI('_sscanf_iovec');DOKE(R23);
+	LDI(4);ADDW(R6);STW(R23);
+	LDW(R7);DOKE(R23);
+	_SP(4+20);STW(R5);
+	LDW(R6);STW(R8);
+	_SP(2+20);DEEK();STW(R9);
+	LDW(R5);STW(R10);
+	LDWI('_doscan');CALL(vAC);
+	
+	label('.10');
+	_EPILOGUE(20,6,0xe0,saveAC=True);
+# ======== (epilog)
+code=[
+	('CODE', '_sread', code0),
+	('DATA', '_sscanf_iovec', code1, 8, 2),
+	('EXPORT', 'sscanf'),
+	('CODE', 'sscanf', code2),
+	('IMPORT', '_doscan') ]
+module(code=code, name='../gigatron/libc/sscanf.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

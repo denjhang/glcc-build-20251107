@@ -1,0 +1,19 @@
+#VCPUv5
+
+# ======== ('CODE', 'getenv', code0)
+def code0():
+	label('getenv');
+	PUSH();
+	LDI(0);
+	label('.3');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'getenv'),
+	('CODE', 'getenv', code0) ]
+module(code=code, name='../gigatron/libc/getenv.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

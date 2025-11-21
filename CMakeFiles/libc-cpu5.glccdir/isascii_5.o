@@ -1,0 +1,87 @@
+#VCPUv5
+
+# ======== ('CODE', 'isascii', code0)
+def code0():
+	label('isascii');
+	PUSH();
+	LDWI(0xff80);ANDW(R8);_BNE('.3');
+	LDI(1);STW(R19);
+	_BRA('.4');
+	label('.3');
+	LDI(0);STW(R19);
+	label('.4');
+	LDW(R19);
+	label('.1');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'isalnum', code1)
+def code1():
+	label('isalnum');
+	PUSH();
+	LDW(R8);SUBI(48);_BLT('.10');
+	LDW(R8);SUBI(57);_BLE('.9');
+	label('.10');
+	LDW(R8);ORI(32);STW(R23);
+	SUBI(97);_BLT('.7');
+	LDW(R23);SUBI(122);_BGT('.7');
+	label('.9');
+	LDI(1);STW(R19);
+	_BRA('.8');
+	label('.7');
+	LDI(0);STW(R19);
+	label('.8');
+	LDW(R19);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'iscntrl', code2)
+def code2():
+	label('iscntrl');
+	PUSH();
+	LDW(R8);XORI(127);_BEQ('.15');
+	LDW(R8);_BLT('.13');
+	SUBI(32);_BGE('.13');
+	label('.15');
+	LDI(1);STW(R19);
+	_BRA('.14');
+	label('.13');
+	LDI(0);STW(R19);
+	label('.14');
+	LDW(R19);
+	label('.11');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'ispunct', code3)
+def code3():
+	label('ispunct');
+	PUSH();
+	LDW(R8);SUBI(32);_BLE('.18');
+	LDW(R8);SUBI(127);_BGE('.18');
+	LDW(R8);SUBI(48);_BLT('.20');
+	LDW(R8);SUBI(57);_BLE('.18');
+	label('.20');
+	LDW(R8);ORI(32);STW(R23);
+	SUBI(97);_BLT('.21');
+	LDW(R23);SUBI(122);_BLE('.18');
+	label('.21');
+	LDI(1);STW(R19);
+	_BRA('.19');
+	label('.18');
+	LDI(0);STW(R19);
+	label('.19');
+	LDW(R19);
+	label('.16');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'isascii'),
+	('CODE', 'isascii', code0),
+	('EXPORT', 'isalnum'),
+	('CODE', 'isalnum', code1),
+	('EXPORT', 'iscntrl'),
+	('CODE', 'iscntrl', code2),
+	('EXPORT', 'ispunct'),
+	('CODE', 'ispunct', code3) ]
+module(code=code, name='../gigatron/libc/isascii.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,154 @@
+#VCPUv6
+
+# ======== ('DATA', 'hash1', code0, 8, 1)
+def code0():
+	label('hash1');
+	bytes(117,105,111,99,100,120,115,115);
+# ======== ('DATA', 'hash2', code1, 9, 1)
+def code1():
+	label('hash2');
+	bytes(10,255);
+	bytes(8,0);
+	bytes(255,16);
+	bytes(1,1);
+	space(1);
+# ======== ('CODE', '_doprint_simple', code2)
+def code2():
+	label('_doprint_simple');
+	_PROLOGUE(32,8,0xfe); # save=R1-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDI(0);DOKE(R0);
+	_BRA('.7');
+	label('.6');
+	LDW(R7);STW(R5);
+	MOVQB(32,R1);
+	MOVQW(0,R2);
+	PEEK();XORI(37);_BEQ('.9');
+	_BRA('.12');
+	label('.11');
+	INCV(R7);
+	label('.12');
+	PEEKV(R7);
+	_BEQ('.14');
+	XORI(37);_BNE('.11');
+	label('.14');
+	LDW(R7);SUBW(R5);STW(R4);
+	_BRA('.10');
+	label('.9');
+	INCV(R7);
+	LDW(R7);
+	PEEK();STW(R3);
+	XORI(45);_BEQ('.17');
+	LDW(R3);XORI(48);_BNE('.19');
+	label('.17');
+	LDW(R3);ST(R1);
+	INCV(R7);
+	LDW(R7);
+	PEEK();STW(R3);
+	_BRA('.19');
+	label('.18');
+	LDW(R2);LSLW();LSLW();ADDW(R2);LSLW();ADDW(R3);SUBI(48);STW(R2);
+	INCV(R7);
+	LDW(R7);
+	PEEK();STW(R3);
+	label('.19');
+	LDW(R3);SUBI(48);_BLT('.21');
+	LDW(R3);SUBI(57);_BLE('.18');
+	label('.21');
+	INCV(R7);
+	LDW(R3);STW(R4);
+	SUBI(110);_BLE('.22');
+	LDW(R4);XORI(5);STW(R4);
+	label('.22');
+	LDW(R4);ANDI(7);STW(R4);
+	LDWI('hash1');ADDW(R4);PEEK();XORW(R3);_BEQ('.24');
+	LDW(R3);XORI(37);_BEQ('.26');
+	LDI(1);ADDW(R5);STW(R7);
+	label('.26');
+	MOVQW(0,R2);
+	MOVQW(1,R4);
+	_BRA('.25');
+	label('.24');
+	LDWI('hash2');ADDW(R4);PEEK();STW(R3);
+	LDWI(0xfffe);STW(R23);
+	LDI(3);ADDW(R6);ANDW(R23);STW(R6);
+	
+	SUBI(-v(-2));DEEKA(R4);
+	LDW(R3);_BNE('.30');
+	_SP(-8+32);STW(R5);
+	LDW(R4);POKE(R5);
+	MOVQW(1,R4);
+	_BRA('.31');
+	label('.30');
+	LDW(R3);XORI(1);_BNE('.32');
+	LDW(R4);STW(R5);
+	STW(R8);
+	CALLI('strlen');
+	STW(R4);
+	_BRA('.33');
+	label('.32');
+	LDW(R3);XORI(255);_BNE('.34');
+	LDW(R4);STW(R8);
+	_SP(-1+32);STW(R9);
+	MOVQW(10,R10);
+	CALLI('_itoa');
+	STW(R5);
+	LD(R1);XORI(48);_BNE('.35');
+	PEEKV(R5);XORI(45);_BNE('.35');
+	MOVQW(45,R8);
+	MOVQW(1,R9);
+	CALLI('_doprint_putc');
+	LDW(R2);SUBI(1);STW(R2);
+	INCV(R5);
+	_BRA('.35');
+	label('.34');
+	LDW(R4);STW(R8);
+	_SP(-1+32);STW(R9);
+	LDW(R3);STW(R10);
+	CALLI('_utoa');
+	STW(R5);
+	label('.35');
+	_SP(-1+32);SUBW(R5);STW(R4);
+	label('.33');
+	label('.31');
+	LDW(R2);SUBW(R4);STW(R2);
+	label('.25');
+	label('.10');
+	LD(R1);XORI(45);_BEQ('.41');
+	LDW(R2);_BLE('.41');
+	LD(R1);STW(R8);
+	LDW(R2);STW(R9);
+	CALLI('_doprint_putc');
+	label('.41');
+	LDW(R5);STW(R8);
+	LDW(R4);STW(R9);
+	CALLI('_doprint_puts');
+	LD(R1);XORI(45);_BNE('.43');
+	LDW(R2);_BLE('.43');
+	MOVQW(32,R8);
+	STW(R9);
+	CALLI('_doprint_putc');
+	label('.43');
+	label('.7');
+	PEEKV(R7);_BNE('.6');
+	DEEKV(R0);
+	label('.5');
+	_EPILOGUE(32,8,0xfe,saveAC=True);
+# ======== (epilog)
+code=[
+	('DATA', 'hash1', code0, 8, 1),
+	('DATA', 'hash2', code1, 9, 1),
+	('EXPORT', '_doprint_simple'),
+	('CODE', '_doprint_simple', code2),
+	('IMPORT', '_doprint_puts'),
+	('IMPORT', '_doprint_putc'),
+	('IMPORT', '_utoa'),
+	('IMPORT', '_itoa'),
+	('IMPORT', 'strlen') ]
+module(code=code, name='../gigatron/libc/_doprint_simple.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

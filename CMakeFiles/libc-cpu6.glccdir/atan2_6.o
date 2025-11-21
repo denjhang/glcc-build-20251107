@@ -1,0 +1,70 @@
+#VCPUv6
+
+# ======== ('CODE', 'atan2', code0)
+def code0():
+	label('atan2');
+	_PROLOGUE(36,12,0xfc); # save=R2-7
+	_MOVF(F8,F5);
+	_MOVF(F11,F2);
+	_MOVF('_fone',F8);
+	_MOVF(F2,F11);
+	CALLI('copysign');
+	_MOVF(FAC,[SP,-5+36]);
+	_MOVF('_fone',F8);
+	_MOVF(F5,F11);
+	CALLI('copysign');
+	_MOVF(FAC,[SP,-10+36]);
+	_MOVF(F2,F8);
+	CALLI('fabs');
+	_MOVF(FAC,F2);
+	_MOVF(F5,F8);
+	CALLI('fabs');
+	_MOVF(FAC,F5);
+	_MOVF('.6',F21);
+	_MOVF(F2,FAC);LDI(F21);_FCMP();_BNE('.4');
+	_MOVF(F5,FAC);LDI(F21);_FCMP();_BNE('.4');
+	_MOVF('.6',F2);
+	_BRA('.5');
+	label('.4');
+	_MOVF(F5,FAC);LDI(F2);_FCMP();_BGT('.7');
+	LDI(F2);_FDIV();_MOVF(FAC,F8);
+	CALLI('atan');
+	_MOVF(FAC,F2);
+	_BRA('.8');
+	label('.7');
+	_MOVF(F2,FAC);LDI(F5);_FDIV();_MOVF(FAC,F8);
+	CALLI('atan');
+	LDWI('_pi_over_2');_FSUBR();_MOVF(FAC,F2);
+	label('.8');
+	label('.5');
+	_MOVF('_fzero',FAC);_SP(-5+36);_FCMP();_BLE('.9');
+	_MOVF(F2,FAC);LDWI('_pi');_FSUBR();_MOVF(FAC,F2);
+	label('.9');
+	_MOVF('_fzero',FAC);_SP(-10+36);_FCMP();_BLE('.11');
+	_MOVF(F2,FAC);_FNEG();_MOVF(FAC,F2);
+	label('.11');
+	_MOVF(F2,FAC);
+	label('.3');
+	_EPILOGUE(36,12,0xfc);
+# ======== ('DATA', '.6', code1, 0, 1)
+def code1():
+	label('.6');
+	bytes(0,0,0,0,0); # 0
+# ======== (epilog)
+code=[
+	('EXPORT', 'atan2'),
+	('CODE', 'atan2', code0),
+	('IMPORT', '_fone'),
+	('IMPORT', '_fzero'),
+	('IMPORT', '_pi_over_2'),
+	('IMPORT', '_pi'),
+	('IMPORT', 'copysign'),
+	('IMPORT', 'fabs'),
+	('IMPORT', 'atan'),
+	('DATA', '.6', code1, 0, 1) ]
+module(code=code, name='../gigatron/libc/atan2.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,112 @@
+#VCPUv7
+
+# ======== ('DATA', 'P', code0, 0, 1)
+def code0():
+	label('P');
+	bytes(116,4,78,110,175); # 0.000126177
+	bytes(123,120,54,136,102); # 0.0302994
+	bytes(129,0,0,0,0); # 1
+# ======== ('DATA', 'Q', code1, 0, 1)
+def code1():
+	label('Q');
+	bytes(110,73,117,181,226); # 3.00199e-06
+	bytes(120,37,113,205,168); # 0.00252448
+	bytes(126,104,184,76,196); # 0.227266
+	bytes(130,0,0,0,0); # 2
+# ======== ('DATA', 'C1', code2, 5, 1)
+def code2():
+	label('C1');
+	bytes(128,49,114,0,0); # 0.693146
+# ======== ('DATA', 'C2', code3, 5, 1)
+def code3():
+	label('C2');
+	bytes(109,63,190,142,124); # 1.42861e-06
+# ======== ('DATA', 'LOG2E', code4, 5, 1)
+def code4():
+	label('LOG2E');
+	bytes(129,56,170,59,41); # 1.4427
+# ======== ('CODE', 'exp', code5)
+def code5():
+	label('exp');
+	_PROLOGUE(32,12,0xf0); # save=R4-7
+	_MOVF(F8,F5);
+	_MOVF(F5,FAC);LDWI('LOG2E');_FMUL();LDWI('.4');_FADD();_MOVF(FAC,F8);
+	CALLI('floor');
+	_MOVF(FAC,[SP,-5+32]);
+	_MOVF([SP,-5+32],FAC);_FTOI();LDW(LAC);STW(R4);
+	_MOVF('.7',FAC);_SP(-5+32);_FCMP();_BGT('.5');
+	_MOVF('.8',F8);
+	CALLI('_foverflow');
+	
+	_BRA('.3');
+	label('.5');
+	_MOVF('.11',FAC);_SP(-5+32);_FCMP();_BLE('.9');
+	_MOVF('.12',FAC);
+	_BRA('.3');
+	label('.9');
+	_MOVF([SP,-5+32],F21);
+	_MOVF(F21,FAC);LDWI('C1');_FMUL();LDI(F5);_FSUBR();_MOVF(FAC,F5);
+	_MOVF(F21,FAC);LDWI('C2');_FMUL();LDI(F5);_FSUBR();_MOVF(FAC,F5);
+	LDI(F5);_FMUL();_MOVF(FAC,[SP,-10+32]);
+	_MOVF([SP,-10+32],F8);
+	MOVIW('P',R11);
+	MOVQW(2,R12);
+	CALLI('_polevl');_MOVF(FAC,F21);
+	_MOVF(F5,FAC);LDI(F21);_FMUL();_MOVF(FAC,[SP,-5+32]);
+	_MOVF([SP,-10+32],F8);
+	MOVIW('Q',R11);
+	MOVQW(3,R12);
+	CALLI('_polevl');
+	_SP(-5+32);_FSUB();_SP(-5+32);_FDIVR();_MOVF(FAC,F5);
+	LDWI('_ftwo');_FMUL();LDWI('_fone');_FADD();_MOVF(FAC,F8);
+	MOVW(R4,R11);
+	CALLI('ldexp');
+	
+	label('.3');
+	_EPILOGUE(32,12,0xf0);
+# ======== ('DATA', '.12', code6, 0, 1)
+def code6():
+	label('.12');
+	bytes(0,0,0,0,0); # 0
+# ======== ('DATA', '.11', code7, 0, 1)
+def code7():
+	label('.11');
+	bytes(137,128,0,0,0); # -256
+# ======== ('DATA', '.8', code8, 0, 1)
+def code8():
+	label('.8');
+	bytes(255,127,255,255,255); # 1.70141e+38
+# ======== ('DATA', '.7', code9, 0, 1)
+def code9():
+	label('.7');
+	bytes(137,0,0,0,0); # 256
+# ======== ('DATA', '.4', code10, 0, 1)
+def code10():
+	label('.4');
+	bytes(128,0,0,0,0); # 0.5
+# ======== (epilog)
+code=[
+	('DATA', 'P', code0, 0, 1),
+	('DATA', 'Q', code1, 0, 1),
+	('DATA', 'C1', code2, 5, 1),
+	('DATA', 'C2', code3, 5, 1),
+	('DATA', 'LOG2E', code4, 5, 1),
+	('EXPORT', 'exp'),
+	('CODE', 'exp', code5),
+	('IMPORT', 'floor'),
+	('IMPORT', 'ldexp'),
+	('IMPORT', '_polevl'),
+	('IMPORT', '_foverflow'),
+	('IMPORT', '_ftwo'),
+	('IMPORT', '_fone'),
+	('DATA', '.12', code6, 0, 1),
+	('DATA', '.11', code7, 0, 1),
+	('DATA', '.8', code8, 0, 1),
+	('DATA', '.7', code9, 0, 1),
+	('DATA', '.4', code10, 0, 1) ]
+module(code=code, name='../gigatron/libc/exp.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

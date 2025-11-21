@@ -1,0 +1,50 @@
+#VCPUv5
+
+# ======== ('CODE', 'fgets', code0)
+def code0():
+	label('fgets');
+	_PROLOGUE(16,4,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDW(R7);STW(R3);
+	_BRA('.7');
+	label('.6');
+	LDW(R3);STW(R23);
+	ADDI(1);STW(R3);
+	LDW(R4);POKE(R23);
+	XORI(10);_BNE('.9');
+	_BRA('.8');
+	label('.9');
+	label('.7');
+	LDW(R6);ADDW(R7);SUBI(-v(-1));_CMPWU(R3);_BLE('.11');
+	LDW(R5);STW(R8);
+	CALLI('fgetc');STW(R23);
+	STW(R4);
+	LDWI(-1);XORW(R23);_BNE('.6');
+	label('.11');
+	label('.8');
+	LDI(0);POKE(R3);
+	LDW(R5);PEEK();ANDI(4);_BEQ('.12');
+	LDI(0);
+	_BRA('.5');
+	label('.12');
+	LDW(R5);PEEK();ANDI(8);_BEQ('.14');
+	LDW(R3);XORW(R7);_BNE('.14');
+	LDI(0);
+	_BRA('.5');
+	label('.14');
+	LDW(R7);
+	label('.5');
+	_EPILOGUE(16,4,0xf8,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'fgets'),
+	('CODE', 'fgets', code0),
+	('IMPORT', 'fgetc') ]
+module(code=code, name='../gigatron/libc/fgets.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

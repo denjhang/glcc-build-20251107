@@ -1,0 +1,52 @@
+#VCPUv6
+
+# ======== ('CODE', '_sprintf_writall', code0)
+def code0():
+	label('_sprintf_writall');
+	_PROLOGUE(16,8,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDI(2);ADDW(R0);STW(R5);
+	DEEK();_BEQ('.6');
+	DEEKV(R5);STW(R8);
+	LDW(R7);STW(R9);
+	LDW(R6);STW(R10);
+	CALLI('memcpy');
+	DEEKV(R5);ADDW(R6);DOKE(R5);
+	DEEKV(R5);POKEQ(0);
+	label('.6');
+	LDW(R6);
+	label('.5');
+	_EPILOGUE(16,8,0xe0,saveAC=True);
+# ======== ('CODE', 'vsprintf', code1)
+def code1():
+	label('vsprintf');
+	_PROLOGUE(24,6,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDW(R0);STW(R4);
+	_SP(-6+24);STW(R0);
+	_SP(-2+24);DOKEI('_sprintf_writall');
+	_SP(-4+24);DOKEA(R7);
+	LDW(R6);STW(R8);
+	LDW(R5);STW(R9);
+	CALLI('_doprint');
+	STW(R3);
+	LDW(R4);STW(R0);
+	LDW(R3);
+	label('.8');
+	_EPILOGUE(24,6,0xf8,saveAC=True);
+# ======== (epilog)
+code=[
+	('CODE', '_sprintf_writall', code0),
+	('EXPORT', 'vsprintf'),
+	('CODE', 'vsprintf', code1),
+	('IMPORT', '_doprint'),
+	('IMPORT', 'memcpy') ]
+module(code=code, name='../gigatron/libc/vsprintf.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

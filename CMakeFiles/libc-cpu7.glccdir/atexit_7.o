@@ -1,0 +1,45 @@
+#VCPUv7
+
+# ======== ('CODE', 'atexit', code0)
+def code0():
+	label('atexit');
+	PUSH();
+	LDWI('__glink_magic_fini');DEEKA(R23);
+	LDWI(0xbeef);XORW(R23);_BEQ('.4');
+	MOVQW(0,R19);
+	_BRA('.9');
+	label('.6');
+	LDW(R19);_SHLI(2);LDXW(vAC,'atexit_chain');_BNE('.10');
+	LDW(R19);_SHLI(2);ADDWI('atexit_chain');DOKEA(R8);
+	LDWI('__glink_magic_fini');DEEKA(R23);
+	LDW(R19);_SHLI(2);ADDWI(v('atexit_chain')+2);DOKEA(R23);
+	MOVIW('__glink_magic_fini',R23);
+	LDW(R19);_SHLI(2);ADDWI('atexit_chain');DOKE(R23);
+	LDI(0);
+	_BRA('.3');
+	label('.10');
+	label('.7');
+	INCV(R19);
+	label('.9');
+	LDI(4);_CMPWU(R19);_BGT('.6');
+	label('.4');
+	LDWI(-1);
+	label('.3');
+	tryhop(2);POP();RET()
+# ======== ('BSS', 'atexit_chain', code1, 16, 2)
+def code1():
+	align(2);
+	label('atexit_chain');
+	space(16);
+# ======== (epilog)
+code=[
+	('EXPORT', 'atexit'),
+	('CODE', 'atexit', code0),
+	('BSS', 'atexit_chain', code1, 16, 2),
+	('IMPORT', '__glink_magic_fini') ]
+module(code=code, name='../gigatron/libc/atexit.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

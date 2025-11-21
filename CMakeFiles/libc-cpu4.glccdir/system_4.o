@@ -1,0 +1,27 @@
+#VCPUv4
+
+# ======== ('CODE', 'system', code0)
+def code0():
+	label('system');
+	PUSH();
+	LDWI('errno');STW(R23);
+	LDI(10);DOKE(R23);
+	LDWI(-1);
+	label('.3');
+	tryhop(2);POP();RET()
+# ======== ('COMMON', 'errno', code1, 2, 2)
+def code1():
+	align(2);
+	label('errno');
+	space(2);
+# ======== (epilog)
+code=[
+	('EXPORT', 'system'),
+	('CODE', 'system', code0),
+	('COMMON', 'errno', code1, 2, 2) ]
+module(code=code, name='../gigatron/libc/system.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

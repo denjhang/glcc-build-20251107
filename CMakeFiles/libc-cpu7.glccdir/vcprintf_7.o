@@ -1,0 +1,31 @@
+#VCPUv7
+
+# ======== ('CODE', 'vcprintf', code0)
+def code0():
+	label('vcprintf');
+	_PROLOGUE(20,4,0xf0); # save=R4-7
+	MOVW(R8,R7);
+	MOVW(R9,R6);
+	LDW(R0);STW(R5);
+	_SP(-6+20);STW(R0);
+	LDWI('console_writall');_STLW(-2+20);
+	MOVW(R7,R8);
+	MOVW(R6,R9);
+	CALLI('_doprint');
+	STW(R4);
+	LDW(R5);STW(R0);
+	LDW(R4);
+	label('.11');
+	_EPILOGUE(20,4,0xf0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'vcprintf'),
+	('CODE', 'vcprintf', code0),
+	('IMPORT', '_doprint'),
+	('IMPORT', 'console_writall') ]
+module(code=code, name='../gigatron/libc/vcprintf.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

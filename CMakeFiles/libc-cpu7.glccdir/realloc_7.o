@@ -1,0 +1,53 @@
+#VCPUv7
+
+# ======== ('CODE', 'realloc', code0)
+def code0():
+	label('realloc');
+	_PROLOGUE(16,6,0xf0); # save=R4-7
+	MOVW(R8,R7);
+	MOVW(R9,R6);
+	MOVQW(0,R4);
+	LDW(R7);_BEQ('.4');
+	SUBI(-v(-8));STW(R8);
+	CALLI('__chk_block_header');
+	SUBI(8);
+	STW(R4);
+	_BGE('.4');
+	LDI(0);
+	_BRA('.3');
+	label('.4');
+	MOVW(R6,R8);
+	CALLI('malloc');
+	STW(R5);
+	_BNE('.6');
+	LDI(0);
+	_BRA('.3');
+	label('.6');
+	LDW(R4);_CMPWU(R6);_BGE('.8');
+	MOVW(R4,R6);
+	label('.8');
+	LDW(R6);_BEQ('.10');
+	MOVW(R5,R8);
+	MOVW(R7,R9);
+	STW(R10);
+	CALLI('memcpy');
+	label('.10');
+	MOVW(R7,R8);
+	CALLI('free');
+	LDW(R5);
+	label('.3');
+	_EPILOGUE(16,6,0xf0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'realloc'),
+	('CODE', 'realloc', code0),
+	('IMPORT', '__chk_block_header'),
+	('IMPORT', 'memcpy'),
+	('IMPORT', 'malloc'),
+	('IMPORT', 'free') ]
+module(code=code, name='../gigatron/libc/realloc.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

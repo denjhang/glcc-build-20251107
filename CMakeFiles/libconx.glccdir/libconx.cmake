@@ -1,0 +1,53 @@
+
+file(REMOVE "mapconx/libconx.a")
+set(glcccmd ".\\glcc.cmd")
+if (NOT EXISTS "${glcccmd}")
+  set(glcccmd "./glcc")
+endif()
+string(ASCII 27 esc)
+set(COLORcyan "${esc}[36m")
+set(COLORreset "${esc}[m")
+if ("../gigatron/mapconx/libconx/cons_geom.c" IS_NEWER_THAN "CMakeFiles/libconx.glccdir/cons_geom_4.o")
+  message("${COLORcyan}Cross-compiling CMakeFiles/libconx.glccdir/cons_geom_4.o${COLORreset}")
+  execute_process(COMMAND "${glcccmd}" "-c" "-cpu=4" "-o" "CMakeFiles/libconx.glccdir/cons_geom_4.o" "../gigatron/mapconx/libconx/cons_geom.c"
+                  WORKING_DIRECTORY "/d/working/vscode-projects/Reference_Project/Gigatron/gigatron-lcc-master/build"
+                  RESULT_VARIABLE status)
+  if (NOT "${status}" EQUAL 0)
+     message(FATAL_ERROR "Cross-compilation failed: ${status}")
+  endif()
+endif()
+file(READ "CMakeFiles/libconx.glccdir/cons_geom_4.o" contents)
+file(APPEND "mapconx/libconx.a" "${contents}")
+if ("../gigatron/mapconx/libconx/cons_geom.c" IS_NEWER_THAN "CMakeFiles/libconx.glccdir/cons_geom_5.o")
+  message("${COLORcyan}Cross-compiling CMakeFiles/libconx.glccdir/cons_geom_5.o${COLORreset}")
+  execute_process(COMMAND "${glcccmd}" "-c" "-cpu=5" "-o" "CMakeFiles/libconx.glccdir/cons_geom_5.o" "../gigatron/mapconx/libconx/cons_geom.c"
+                  WORKING_DIRECTORY "/d/working/vscode-projects/Reference_Project/Gigatron/gigatron-lcc-master/build"
+                  RESULT_VARIABLE status)
+  if (NOT "${status}" EQUAL 0)
+     message(FATAL_ERROR "Cross-compilation failed: ${status}")
+  endif()
+endif()
+file(READ "CMakeFiles/libconx.glccdir/cons_geom_5.o" contents)
+file(APPEND "mapconx/libconx.a" "${contents}")
+if ("../gigatron/mapconx/libconx/cons_geom.c" IS_NEWER_THAN "CMakeFiles/libconx.glccdir/cons_geom_6.o")
+  message("${COLORcyan}Cross-compiling CMakeFiles/libconx.glccdir/cons_geom_6.o${COLORreset}")
+  execute_process(COMMAND "${glcccmd}" "-c" "-cpu=6" "-o" "CMakeFiles/libconx.glccdir/cons_geom_6.o" "../gigatron/mapconx/libconx/cons_geom.c"
+                  WORKING_DIRECTORY "/d/working/vscode-projects/Reference_Project/Gigatron/gigatron-lcc-master/build"
+                  RESULT_VARIABLE status)
+  if (NOT "${status}" EQUAL 0)
+     message(FATAL_ERROR "Cross-compilation failed: ${status}")
+  endif()
+endif()
+file(READ "CMakeFiles/libconx.glccdir/cons_geom_6.o" contents)
+file(APPEND "mapconx/libconx.a" "${contents}")
+if ("../gigatron/mapconx/libconx/cons_geom.c" IS_NEWER_THAN "CMakeFiles/libconx.glccdir/cons_geom_7.o")
+  message("${COLORcyan}Cross-compiling CMakeFiles/libconx.glccdir/cons_geom_7.o${COLORreset}")
+  execute_process(COMMAND "${glcccmd}" "-c" "-cpu=7" "-o" "CMakeFiles/libconx.glccdir/cons_geom_7.o" "../gigatron/mapconx/libconx/cons_geom.c"
+                  WORKING_DIRECTORY "/d/working/vscode-projects/Reference_Project/Gigatron/gigatron-lcc-master/build"
+                  RESULT_VARIABLE status)
+  if (NOT "${status}" EQUAL 0)
+     message(FATAL_ERROR "Cross-compilation failed: ${status}")
+  endif()
+endif()
+file(READ "CMakeFiles/libconx.glccdir/cons_geom_7.o" contents)
+file(APPEND "mapconx/libconx.a" "${contents}")

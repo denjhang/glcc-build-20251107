@@ -1,0 +1,78 @@
+#VCPUv5
+
+# ======== ('CODE', 'srand', code0)
+def code0():
+	label('srand');
+	_PROLOGUE(4,0,0x80); # save=R7
+	LDW(R8);STW(R7);
+	_BEQ('.10');
+	LDWI('init');STW(R23);
+	LDI(1);POKE(R23);
+	LDW(R7);_STLU(LAC);_MOVL(LAC,'seed');
+	CALLI('rand');
+	CALLI('rand');
+	_BRA('.11');
+	label('.10');
+	LDWI('init');STW(R23);
+	LDI(0);POKE(R23);
+	label('.11');
+	label('.9');
+	_EPILOGUE(4,0,0x80);
+# ======== ('CODE', '_srand', code1)
+def code1():
+	label('_srand');
+	_PROLOGUE(4,0,0x0); # save=None
+	CALLI('SYS_Random');
+	_STLU(LAC);_MOVL(LAC,'seed');
+	label('.12');
+	_EPILOGUE(4,0,0x0);
+# ======== ('CODE', 'rand', code2)
+def code2():
+	label('rand');
+	_PROLOGUE(4,0,0x0); # save=None
+	LDWI('init');PEEK();_BNE('.14');
+	CALLI('_srand');
+	label('.14');
+	_MOVL('.16',LAC);LDWI('seed');_LMUL();LDWI('.17');_LADD();_MOVL(LAC,'seed');
+	LDWI(32767);STW(R23);
+	LDWI(v('seed')+2);DEEK();ANDW(R23);
+	label('.13');
+	_EPILOGUE(4,0,0x0,saveAC=True);
+# ======== ('BSS', 'seed', code3, 4, 4)
+def code3():
+	align(4);
+	label('seed');
+	space(4);
+# ======== ('BSS', 'init', code4, 1, 1)
+def code4():
+	label('init');
+	space(1);
+# ======== ('DATA', '.17', code5, 0, 4)
+def code5():
+	align(4);
+	label('.17');
+	words(62303,15470); # 1013904223
+# ======== ('DATA', '.16', code6, 0, 4)
+def code6():
+	align(4);
+	label('.16');
+	words(51557,41279); # 2705312101
+# ======== (epilog)
+code=[
+	('EXPORT', 'srand'),
+	('CODE', 'srand', code0),
+	('EXPORT', '_srand'),
+	('CODE', '_srand', code1),
+	('EXPORT', 'rand'),
+	('CODE', 'rand', code2),
+	('BSS', 'seed', code3, 4, 4),
+	('BSS', 'init', code4, 1, 1),
+	('IMPORT', 'SYS_Random'),
+	('DATA', '.17', code5, 0, 4),
+	('DATA', '.16', code6, 0, 4) ]
+module(code=code, name='../gigatron/libc/rand.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

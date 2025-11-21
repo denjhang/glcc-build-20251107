@@ -1,0 +1,36 @@
+#VCPUv5
+
+# ======== ('CODE', 'fputc', code0)
+def code0():
+	label('fputc');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	_SP(0+12);STW(R23);
+	LDW(R8);DOKE(R23);
+	LDW(R9);STW(R7);
+	STW(R8);
+	CALLI('_schkwrite');
+	STW(R6);
+	_BEQ('.6');
+	_SP(0+12);STW(R8);
+	LDI(1);STW(R9);
+	LDW(R7);STW(R10);
+	CALL(R6);
+	XORI(1);_BNE('.8');
+	_SP(0+12);DEEK();
+	_BRA('.5');
+	label('.8');
+	label('.6');
+	LDWI(-1);
+	label('.5');
+	_EPILOGUE(12,6,0xc0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'fputc'),
+	('CODE', 'fputc', code0),
+	('IMPORT', '_schkwrite') ]
+module(code=code, name='../gigatron/libc/fputc.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

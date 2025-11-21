@@ -1,0 +1,47 @@
+#VCPUv6
+
+# ======== ('CODE', 'perror', code0)
+def code0():
+	label('perror');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	LDWI('_iob2');STW(R6);
+	LDW(R7);_BEQ('.2');
+	PEEK();_BEQ('.2');
+	LDW(R7);STW(R8);
+	LDW(R6);STW(R9);
+	CALLI('fputs');
+	LDWI('.4');STW(R8);
+	LDW(R6);STW(R9);
+	CALLI('fputs');
+	label('.2');
+	LDWI('errno');DEEKA(R8);
+	CALLI('strerror');
+	STW(R8);
+	LDW(R6);STW(R9);
+	CALLI('fputs');
+	MOVQW(10,R8);
+	LDW(R6);STW(R9);
+	CALLI('fputc');
+	label('.1');
+	_EPILOGUE(12,6,0xc0);
+# ======== ('DATA', '.4', code1, 0, 1)
+def code1():
+	label('.4');
+	bytes(58,32,0);
+# ======== (epilog)
+code=[
+	('EXPORT', 'perror'),
+	('CODE', 'perror', code0),
+	('IMPORT', 'errno'),
+	('IMPORT', 'strerror'),
+	('IMPORT', 'fputs'),
+	('IMPORT', 'fputc'),
+	('IMPORT', '_iob2'),
+	('DATA', '.4', code1, 0, 1) ]
+module(code=code, name='../gigatron/libc/perror.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

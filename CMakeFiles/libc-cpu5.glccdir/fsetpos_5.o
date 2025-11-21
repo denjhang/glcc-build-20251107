@@ -1,0 +1,51 @@
+#VCPUv5
+
+# ======== ('CODE', 'fgetpos', code0)
+def code0():
+	label('fgetpos');
+	_PROLOGUE(8,2,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R7);STW(R8);
+	CALLI('ftell');
+	LDW(R6);_MOVL(LAC,[vAC]);
+	LDWI('.4');_LCMPS();_BLT('.2');
+	LDI(0);
+	_BRA('.1');
+	label('.2');
+	LDWI(-1);
+	label('.1');
+	_EPILOGUE(8,2,0xc0,saveAC=True);
+# ======== ('CODE', 'fsetpos', code1)
+def code1():
+	label('fsetpos');
+	_PROLOGUE(16,10,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R7);STW(R8);
+	LDW(R6);_MOVL([vAC],L9);
+	LDI(0);STW(R11);
+	CALLI('fseek');
+	
+	label('.5');
+	_EPILOGUE(16,10,0xc0,saveAC=True);
+# ======== ('DATA', '.4', code2, 0, 4)
+def code2():
+	align(4);
+	label('.4');
+	words(0,0); # 0
+# ======== (epilog)
+code=[
+	('EXPORT', 'fgetpos'),
+	('CODE', 'fgetpos', code0),
+	('EXPORT', 'fsetpos'),
+	('CODE', 'fsetpos', code1),
+	('IMPORT', 'ftell'),
+	('IMPORT', 'fseek'),
+	('DATA', '.4', code2, 0, 4) ]
+module(code=code, name='../gigatron/libc/fsetpos.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

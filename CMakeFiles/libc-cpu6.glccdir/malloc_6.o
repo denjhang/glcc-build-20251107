@@ -1,0 +1,251 @@
+#VCPUv6
+
+# ======== ('DATA', 'head', code0, 10, 2)
+def code0():
+	align(2);
+	label('head');
+	words(0); # 0
+	words('head');
+	words('head');
+	words('head');
+	words('head');
+# ======== ('CODE', '__free_block', code1)
+def code1():
+	label('__free_block');
+	PUSH();
+	DEEKV(R8);STW(R19);
+	LDI(2);ADDW(R8);DEEKA(R18);
+	_BRA('.5');
+	label('.4');
+	LDI(2);ADDW(R18);DEEKA(R18);
+	label('.5');
+	DEEKV(R18);ANDI(1);_BNE('.4');
+	LDI(8);ADDW(R18);DEEKA(R17);
+	LDI(8);ADDW(R8);DOKEA(R17);
+	LDI(6);ADDW(R17);DOKEA(R8);
+	LDI(6);ADDW(R8);DOKEA(R18);
+	LDI(8);ADDW(R18);DOKEA(R8);
+	label('.3');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '__list_block', code2)
+def code2():
+	label('__list_block');
+	PUSH();
+	LDI(4);ADDW(R9);DEEKA(R19);
+	LDI(4);ADDW(R8);DOKEA(R19);
+	LDI(2);ADDW(R8);DOKEA(R9);
+	LDI(2);ADDW(R19);DOKEA(R8);
+	LDI(4);ADDW(R9);DOKEA(R8);
+	label('.7');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '__assume_block_position', code3)
+def code3():
+	label('__assume_block_position');
+	PUSH();
+	LDW(R10);DOKE(R8);
+	LDI(2);ADDW(R9);DEEKA(R19);
+	LDI(2);ADDW(R8);DOKEA(R19);
+	LDI(4);ADDW(R19);DOKEA(R8);
+	LDI(4);ADDW(R8);DEEKA(R18);
+	LDI(2);ADDW(R18);DOKEA(R8);
+	LDI(6);ADDW(R9);DEEKA(R19);
+	LDI(6);ADDW(R8);DOKEA(R19);
+	LDI(8);ADDW(R19);DOKEA(R8);
+	LDI(8);ADDW(R8);DEEKA(R18);
+	LDI(6);ADDW(R18);DOKEA(R8);
+	label('.8');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'try_merge_with_next', code4)
+def code4():
+	label('try_merge_with_next');
+	_PROLOGUE(16,6,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	LDI(2);ADDW(R7);DEEKA(R6);
+	DEEKV(R7);
+	STW(R5);
+	ANDI(1);_BNE('.13');
+	DEEKV(R6);
+	STW(R4);
+	ANDI(1);_BNE('.13');
+	LDW(R5);ADDW(R7);XORW(R6);_BEQ('.10');
+	label('.13');
+	LDI(0);
+	_BRA('.9');
+	label('.10');
+	LDW(R7);STW(R8);
+	LDW(R6);STW(R9);
+	LDW(R5);ADDW(R4);STW(R10);
+	CALLI('__assume_block_position');
+	LDI(1);
+	label('.9');
+	_EPILOGUE(16,6,0xf0,saveAC=True);
+# ======== ('CODE', 'find_block', code5)
+def code5():
+	label('find_block');
+	_PROLOGUE(20,8,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDWI('head');STW(R4);
+	label('.15');
+	LDI(6);ADDW(R4);DEEKA(R4);
+	LDWI('head');XORW(R4);_BNE('.19');
+	LDI(0);
+	_BRA('.14');
+	label('.19');
+	DEEKV(R4);
+	STW(R5);
+	SUBW(R7);
+	STW(R6);
+	_BLT('.15');
+	label('.17');
+	LDW(R6);SUBI(10);_BGE('.23');
+	LDI(8);ADDW(R4);DEEKA(R23);
+	LDI(6);ADDW(R4);DEEK();ADDI(8);DOKEA(R23);
+	LDI(6);ADDW(R4);DEEKA(R23);
+	LDI(8);ADDW(R4);DEEK();ADDI(6);DOKEA(R23);
+	LDW(R5);ORI(1);DOKE(R4);
+	_BRA('.24');
+	label('.23');
+	LDW(R7);ADDW(R4);STW(R3);
+	LDI(4);ADDW(R4);DEEKA(R23);
+	LDI(4);ADDW(R3);DOKEA(R23);
+	LDI(8);ADDW(R4);DEEKA(R23);
+	LDI(8);ADDW(R3);DOKEA(R23);
+	LDW(R3);STW(R8);
+	LDW(R4);STW(R9);
+	LDW(R6);STW(R10);
+	CALLI('__assume_block_position');
+	LDW(R7);ORI(1);DOKE(R4);
+	LDW(R4);STW(R8);
+	LDW(R3);STW(R9);
+	CALLI('__list_block');
+	label('.24');
+	LDW(R4);
+	label('.14');
+	_EPILOGUE(20,8,0xf8,saveAC=True);
+# ======== ('CODE', '__chk_block_header', code6)
+def code6():
+	label('__chk_block_header');
+	PUSH();
+	DEEKV(R8);ANDI(1);XORI(1);_BNE('.26');
+	LDW(R8);STW(R23);
+	LDI(2);ADDW(R8);DEEK();ADDI(4);DEEK();XORW(R23);_BNE('.26');
+	LDI(4);ADDW(R8);DEEK();ADDI(2);DEEK();XORW(R23);_BNE('.26');
+	DEEKV(R8);ORI(1);XORI(1);
+	_BRA('.25');
+	label('.26');
+	LDI(0);
+	label('.25');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'free', code7)
+def code7():
+	label('free');
+	_PROLOGUE(12,4,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	_BEQ('.29');
+	SUBI(-v(-8));
+	STW(R6);
+	STW(R8);
+	CALLI('__chk_block_header');
+	STW(R5);
+	DOKE(R6);
+	_BNE('.31');
+	MOVQW(10,R8);
+	LDWI('.33');STW(R9);
+	CALLI('_exitm');
+	label('.31');
+	LDW(R6);STW(R8);
+	CALLI('__free_block');
+	LDW(R6);STW(R8);
+	CALLI('try_merge_with_next');
+	LDI(4);ADDW(R6);DEEKA(R8);
+	CALLI('try_merge_with_next');
+	label('.29');
+	label('.28');
+	_EPILOGUE(12,4,0xe0);
+# ======== ('CODE', 'malloc', code8)
+def code8():
+	label('malloc');
+	_PROLOGUE(8,2,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	_CMPIU(4);_BGE('.35');
+	MOVQW(4,R7);
+	label('.35');
+	LDI(8);ADDW(R7);ADDI(3);ORI(3);XORI(3);STW(R7);
+	STW(R23);
+	LDWI(0x8000);_CMPWU(R23);_BLE('.37');
+	LDW(R7);STW(R8);
+	CALLI('find_block');
+	STW(R6);
+	_BEQ('.39');
+	LDI(8);ADDW(R6);
+	_BRA('.34');
+	label('.39');
+	label('.37');
+	LDI(0);
+	label('.34');
+	_EPILOGUE(8,2,0xc0,saveAC=True);
+# ======== ('DATA', '__glink_magic_heap', code9, 2, 2)
+def code9():
+	align(2);
+	label('__glink_magic_heap');
+	words(48879);
+# ======== ('CODE', 'malloc_init', code10)
+def code10():
+	label('malloc_init');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	LDWI('__glink_magic_heap');DEEKA(R7);
+	DOKEI(0);
+	_BRA('.43');
+	label('.42');
+	LDI(2);ADDW(R7);DEEKA(R6);
+	LDW(R7);STW(R8);
+	LDWI(v('head')+2);DEEKA(R9);
+	CALLI('__list_block');
+	LDW(R7);STW(R8);
+	CALLI('__free_block');
+	LDW(R6);STW(R7);
+	label('.43');
+	LDW(R7);STW(R23);
+	_BEQ('.46');
+	LDWI(0xbeef);XORW(R23);_BNE('.42');
+	label('.46');
+	label('.41');
+	_EPILOGUE(12,6,0xc0);
+# ======== ('DATA', '__glink_magic_init', code11, 4, 2)
+def code11():
+	align(2);
+	label('__glink_magic_init');
+	words('malloc_init');
+	words(0);
+# ======== ('DATA', '.33', code12, 0, 1)
+def code12():
+	label('.33');
+	bytes(102,114,101,101,58,32,99,111);
+	bytes(114,114,117,112,116,101,100,32);
+	bytes(104,101,97,112,33,0);
+# ======== (epilog)
+code=[
+	('DATA', 'head', code0, 10, 2),
+	('CODE', '__free_block', code1),
+	('CODE', '__list_block', code2),
+	('CODE', '__assume_block_position', code3),
+	('CODE', 'try_merge_with_next', code4),
+	('CODE', 'find_block', code5),
+	('EXPORT', '__chk_block_header'),
+	('CODE', '__chk_block_header', code6),
+	('EXPORT', 'free'),
+	('CODE', 'free', code7),
+	('EXPORT', 'malloc'),
+	('CODE', 'malloc', code8),
+	('EXPORT', '__glink_magic_heap'),
+	('DATA', '__glink_magic_heap', code9, 2, 2),
+	('CODE', 'malloc_init', code10),
+	('DATA', '__glink_magic_init', code11, 4, 2),
+	('IMPORT', '_exitm'),
+	('DATA', '.33', code12, 0, 1) ]
+module(code=code, name='../gigatron/libc/malloc.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

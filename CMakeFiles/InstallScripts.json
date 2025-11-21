@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/d/working/vscode-projects/Reference_Project/Gigatron/gigatron-lcc-master/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

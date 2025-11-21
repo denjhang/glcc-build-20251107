@@ -1,0 +1,78 @@
+#VCPUv4
+
+# ======== ('CODE', '_avl_del', code0)
+def code0():
+	label('_avl_del');
+	_PROLOGUE(52,6,0xfc); # save=R2-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	_SP(-2+52);STW(R4);
+	LDI(0);DOKE(R4);
+	label('.5');
+	label('.9');
+	LDW(R4);SUBI(-v(-2));STW(R4);
+	LDW(R7);DOKE(R4);
+	DEEK();_BNE('.10');
+	LDI(0);
+	_BRA('.3');
+	label('.10');
+	LDW(R6);STW(R8);
+	LDW(R7);DEEK();STW(R9);
+	CALL(R5);
+	STW(R2);
+	_BNE('.12');
+	_BRA('.7');
+	label('.12');
+	LDW(R2);_BGE('.14');
+	LDW(R7);DEEK();ADDI(2);STW(R7);
+	_BRA('.5');
+	label('.14');
+	LDW(R7);DEEK();ADDI(4);STW(R7);
+	_BRA('.5');
+	label('.7');
+	LDW(R7);DEEK();STW(R6);
+	LDI(2);ADDW(R6);DEEK();_BNE('.16');
+	LDI(4);ADDW(R6);DEEK();DOKE(R7);
+	_BRA('.17');
+	label('.16');
+	LDI(4);ADDW(R6);
+	STW(R3);
+	DEEK();_BNE('.21');
+	LDI(2);ADDW(R6);DEEK();DOKE(R7);
+	_BRA('.19');
+	label('.20');
+	LDW(R3);DEEK();ADDI(2);STW(R3);
+	label('.21');
+	LDW(R3);DEEK();ADDI(2);DEEK();_BNE('.20');
+	LDW(R3);DEEK();ADDI(4);DEEK();STW(R2);
+	LDW(R3);DEEK();DOKE(R7);
+	LDW(R6);DOKE(R3);
+	LDW(R7);DEEK();ADDI(2);STW(R23);
+	LDI(2);ADDW(R6);DEEK();DOKE(R23);
+	LDW(R7);DEEK();ADDI(4);STW(R23);
+	LDI(4);ADDW(R6);DEEK();DOKE(R23);
+	LDI(2);ADDW(R6);STW(R23);
+	LDI(0);DOKE(R23);
+	LDI(4);ADDW(R6);STW(R23);
+	LDW(R2);DOKE(R23);
+	LDW(R7);DEEK();ADDI(4);STW(R7);
+	_BRA('.9');
+	label('.19');
+	label('.17');
+	LDW(R4);STW(R8);
+	LDWI('__avl_rebal');CALL(vAC);
+	LDW(R6);
+	label('.3');
+	_EPILOGUE(52,6,0xfc,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', '_avl_del'),
+	('CODE', '_avl_del', code0),
+	('IMPORT', '__avl_rebal') ]
+module(code=code, name='../gigatron/libc/_avldel.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

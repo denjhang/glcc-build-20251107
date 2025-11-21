@@ -1,0 +1,38 @@
+#VCPUv5
+
+# ======== ('CODE', 'fwrite', code0)
+def code0():
+	label('fwrite');
+	_PROLOGUE(20,6,0xfc); # save=R2-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDW(R11);STW(R4);
+	STW(R8);
+	CALLI('_schkwrite');
+	STW(R3);
+	_BEQ('.6');
+	LDW(R6);_MUL(R5);STW(R2);
+	LDW(R7);STW(R8);
+	LDW(R2);STW(R9);
+	LDW(R4);STW(R10);
+	CALL(R3);
+	XORW(R2);_BNE('.8');
+	LDW(R5);
+	_BRA('.5');
+	label('.8');
+	label('.6');
+	LDI(0);
+	label('.5');
+	_EPILOGUE(20,6,0xfc,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'fwrite'),
+	('CODE', 'fwrite', code0),
+	('IMPORT', '_schkwrite') ]
+module(code=code, name='../gigatron/libc/fwrite.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

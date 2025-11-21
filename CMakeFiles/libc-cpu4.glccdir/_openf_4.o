@@ -1,0 +1,22 @@
+#VCPUv4
+
+# ======== ('CODE', '_openf', code0)
+def code0():
+	label('_openf');
+	PUSH();
+	LDWI('errno');STW(R23);
+	LDI(10);DOKE(R23);
+	LDWI(-1);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', '_openf'),
+	('CODE', '_openf', code0),
+	('IMPORT', 'errno') ]
+module(code=code, name='../gigatron/libc/_openf.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

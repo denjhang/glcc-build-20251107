@@ -1,0 +1,97 @@
+#VCPUv4
+
+# ======== ('DATA', 'R', code0, 15, 1)
+def code0():
+	label('R');
+	bytes(128,202,33,238,227); # -0.78958
+	bytes(133,3,23,227,152); # 16.3867
+	bytes(135,128,72,48,137); # -64.141
+# ======== ('DATA', 'S', code1, 15, 1)
+def code1():
+	label('S');
+	bytes(134,142,176,106,31); # -35.6723
+	bytes(137,28,12,0,137); # 312.094
+	bytes(138,192,108,72,206); # -769.692
+# ======== ('DATA', 'LOG2', code2, 5, 1)
+def code2():
+	label('LOG2');
+	bytes(128,49,114,23,248); # 0.693147
+# ======== ('DATA', 'SQRTH', code3, 5, 1)
+def code3():
+	label('SQRTH');
+	bytes(128,53,4,243,52); # 0.707107
+# ======== ('CODE', 'log', code4)
+def code4():
+	label('log');
+	_PROLOGUE(32,10,0xfc); # save=R2-7
+	_MOVF(F8,F5);
+	_MOVF(F5,FAC);LDWI('.6');_FCMP();_BGT('.4');
+	LDWI('errno');STW(R23);
+	LDI(1);DOKE(R23);
+	_MOVF('.7',F8);
+	LDWI('_fexception');CALL(vAC);
+	
+	_BRA('.3');
+	label('.4');
+	_MOVF(F5,F8);
+	_SP(-2+32);STW(R11);
+	LDWI('frexp');CALL(vAC);
+	_MOVF(FAC,F5);
+	_MOVF(F5,FAC);LDWI('SQRTH');_FCMP();_BGE('.8');
+	_MOVF(F5,F8);
+	LDI(1);STW(R11);
+	LDWI('ldexp');CALL(vAC);
+	_MOVF(FAC,F5);
+	_SP(-2+32);STW(R23);
+	DEEK();SUBI(1);DOKE(R23);
+	label('.8');
+	_MOVF('_fhalf',F21);
+	_MOVF(F5,FAC);LDI(F21);_FSUB();_MOVF(FAC,F2);
+	_MOVF(F21,FAC);LDI(F5);_FMUL();LDI(F21);_FADD();_MOVF(FAC,F18);
+	_MOVF(F2,FAC);LDI(F21);_FSUB();LDI(F18);_FDIV();_MOVF(FAC,F5);
+	LDI(F5);_FMUL();_MOVF(FAC,F2);
+	_MOVF(F2,F8);
+	LDWI('R');STW(R11);
+	LDI(2);STW(R12);
+	LDWI('_polevl');CALL(vAC);_MOVF(FAC,F21);
+	STW(T0);_MOVF(F21,[SP,-7+32]);LDW(T0) #genspill
+	_MOVF(F2,F8);
+	LDWI('S');STW(R11);
+	LDI(3);STW(R12);
+	LDWI('_p1evl');CALL(vAC);_MOVF(FAC,F18);
+	_MOVF(F2,FAC);_SP(-7+32);_FMUL();LDI(F18);_FDIV();LDI(F5);_FMUL();_MOVF(FAC,F2);
+	_SP(-2+32);DEEK();_STLS(LAC);_FCVI();LDWI('LOG2');_FMUL();_MOVF(FAC,F21);
+	_MOVF(F5,FAC);LDI(F2);_FADD();LDI(F21);_FADD();
+	label('.3');
+	_EPILOGUE(32,10,0xfc);
+# ======== ('DATA', '.7', code5, 0, 1)
+def code5():
+	label('.7');
+	bytes(255,255,255,255,255); # -1.70141e+38
+# ======== ('DATA', '.6', code6, 0, 1)
+def code6():
+	label('.6');
+	bytes(0,0,0,0,0); # 0
+# ======== (epilog)
+code=[
+	('DATA', 'R', code0, 15, 1),
+	('DATA', 'S', code1, 15, 1),
+	('DATA', 'LOG2', code2, 5, 1),
+	('DATA', 'SQRTH', code3, 5, 1),
+	('EXPORT', 'log'),
+	('CODE', 'log', code4),
+	('IMPORT', 'ldexp'),
+	('IMPORT', 'frexp'),
+	('IMPORT', 'errno'),
+	('IMPORT', '_p1evl'),
+	('IMPORT', '_polevl'),
+	('IMPORT', '_fexception'),
+	('IMPORT', '_fhalf'),
+	('DATA', '.7', code5, 0, 1),
+	('DATA', '.6', code6, 0, 1) ]
+module(code=code, name='../gigatron/libc/log.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,45 @@
+#VCPUv7
+
+# ======== ('BSS', '.6', code0, 1, 1)
+def code0():
+	label('.6');
+	space(1);
+# ======== ('CODE', 'fgetc', code1)
+def code1():
+	label('fgetc');
+	_PROLOGUE(16,8,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	PEEK();STW(R6);
+	MOVW(R7,R8);
+	CALLI('_schkread');
+	STW(R5);
+	_BEQ('.7');
+	LDW(R6);ANDI(16);_BEQ('.9');
+	LDW(R6);XORI(16);POKE(R7);
+	LDI(1);ADDW(R7);PEEK();
+	_BRA('.5');
+	label('.9');
+	MOVW(R7,R8);
+	MOVIW('.6',R9);
+	MOVQW(1,R10);
+	CALL(R5);
+	_BLE('.11');
+	LDWI('.6');PEEK();
+	_BRA('.5');
+	label('.11');
+	label('.7');
+	LDWI(-1);
+	label('.5');
+	_EPILOGUE(16,8,0xe0,saveAC=True);
+# ======== (epilog)
+code=[
+	('BSS', '.6', code0, 1, 1),
+	('EXPORT', 'fgetc'),
+	('CODE', 'fgetc', code1),
+	('IMPORT', '_schkread') ]
+module(code=code, name='../gigatron/libc/fgetc.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

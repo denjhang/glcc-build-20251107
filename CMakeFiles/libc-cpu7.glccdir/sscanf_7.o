@@ -1,0 +1,59 @@
+#VCPUv7
+
+# ======== ('CODE', '_sread', code0)
+def code0():
+	label('_sread');
+	PUSH();
+	LDI(4);ADDW(R8);STW(R18);
+	DEEK();
+	_BEQ('.9');
+	PEEK();
+	STW(R19);
+	_BNE('.7');
+	label('.9');
+	LDI(0);
+	_BRA('.6');
+	label('.7');
+	LDW(R19);POKE(R9);
+	DEEKV(R18);ADDI(1);DOKE(R18);
+	LDI(1);
+	label('.6');
+	tryhop(2);POP();RET()
+# ======== ('DATA', '_sscanf_iovec', code1, 8, 2)
+def code1():
+	align(2);
+	label('_sscanf_iovec');
+	words(0);
+	words('_sread');
+	space(4);
+# ======== ('CODE', 'sscanf', code2)
+def code2():
+	label('sscanf');
+	_PROLOGUE(20,6,0xe0); # save=R5-7
+	MOVW(R8,R7);
+	LDW(R9);_STLW(2+20);
+	_SP(-6+20);STW(R6);
+	POKEQ(129);
+	LDI(2);ADDW(R6);DOKEI('_sscanf_iovec');
+	LDI(4);ADDW(R6);DOKEA(R7);
+	_SP(4+20);STW(R5);
+	MOVW(R6,R8);
+	_LDLW(2+20);STW(R9);
+	MOVW(R5,R10);
+	CALLI('_doscan');
+	
+	label('.10');
+	_EPILOGUE(20,6,0xe0,saveAC=True);
+# ======== (epilog)
+code=[
+	('CODE', '_sread', code0),
+	('DATA', '_sscanf_iovec', code1, 8, 2),
+	('EXPORT', 'sscanf'),
+	('CODE', 'sscanf', code2),
+	('IMPORT', '_doscan') ]
+module(code=code, name='../gigatron/libc/sscanf.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

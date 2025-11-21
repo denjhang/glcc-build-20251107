@@ -1,0 +1,33 @@
+#VCPUv4
+
+# ======== ('CODE', 'tmpfile', code0)
+def code0():
+	label('tmpfile');
+	PUSH();
+	LDWI('errno');STW(R23);
+	LDI(10);DOKE(R23);
+	LDI(0);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'tmpnam', code1)
+def code1():
+	label('tmpnam');
+	PUSH();
+	LDWI('errno');STW(R23);
+	LDI(10);DOKE(R23);
+	LDI(0);
+	label('.6');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'tmpfile'),
+	('CODE', 'tmpfile', code0),
+	('EXPORT', 'tmpnam'),
+	('CODE', 'tmpnam', code1),
+	('IMPORT', 'errno') ]
+module(code=code, name='../gigatron/libc/tmpfile.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,121 @@
+#VCPUv6
+
+# ======== ('CODE', '_ipow', code0)
+def code0():
+	label('_ipow');
+	PUSH();
+	_MOVF(F11,FAC);_FTOI();_MOVL(LAC,L18);
+	_MOVF('.4',F15);
+	_BRA('.6');
+	label('.5');
+	_MOVL(L18,LAC);LDWI('.10');_LAND();LDWI('.11');_LCMPX();_BEQ('.8');
+	_MOVF(F15,FAC);LDI(F8);_FMUL();_MOVF(FAC,F15);
+	label('.8');
+	_MOVF(F8,FAC);LDI(F8);_FMUL();_MOVF(FAC,F8);
+	_MOVL(L18,LAC);LDI(1);_LSHRS();_MOVL(LAC,L18);
+	label('.6');
+	_MOVL(L18,LAC);LDWI('.11');_LCMPX();_BNE('.5');
+	_MOVF(F15,FAC);
+	label('.3');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'pow', code1)
+def code1():
+	label('pow');
+	_PROLOGUE(40,10,0xfc); # save=R2-7
+	_MOVF(F8,F5);
+	_MOVF(F11,F2);
+	_MOVF('.4',[SP,-10+40]);
+	_MOVF(F2,FAC);LDWI('.16');_FCMP();_BEQ('.15');
+	_MOVF(F5,FAC);LDWI('.4');_FCMP();_BNE('.13');
+	label('.15');
+	_MOVF('.4',FAC);
+	_BRA('.12');
+	label('.13');
+	_MOVF(F2,FAC);LDWI('.16');_FCMP();_BGE('.17');
+	_FNEG();_MOVF(FAC,F2);
+	_MOVF(F5,FAC);LDWI('.4');_FDIVR();_MOVF(FAC,F5);
+	label('.17');
+	_MOVF(F2,F8);
+	_SP(-5+40);STW(R11);
+	CALLI('modf');
+	_MOVF(FAC,[SP,-15+40]);
+	_MOVF(F5,FAC);LDWI('.16');_FCMP();_BGT('.19');
+	LDWI('.16');_FCMP();_BNE('.21');
+	_MOVF('.16',FAC);
+	_BRA('.12');
+	label('.21');
+	_MOVF('.16',FAC);_SP(-15+40);_FCMP();_BEQ('.23');
+	LDWI('errno');DOKEI(1);
+	_MOVF('.16',F8);
+	CALLI('_fexception');
+	
+	_BRA('.12');
+	label('.23');
+	_MOVF([SP,-5+40],FAC);_FTOI();LDW(LAC);ANDI(1);_BEQ('.25');
+	_MOVF('.27',[SP,-10+40]);
+	label('.25');
+	_MOVF(F5,FAC);_FNEG();_MOVF(FAC,F5);
+	label('.19');
+	_MOVF('.16',FAC);_SP(-15+40);_FCMP();_BNE('.28');
+	_MOVF('.30',FAC);_SP(-5+40);_FCMP();_BLE('.28');
+	_MOVF(F5,F8);
+	_MOVF([SP,-5+40],F11);
+	CALLI('_ipow');
+	_SP(-10+40);_FMUL();
+	_BRA('.12');
+	label('.28');
+	_MOVF(F5,F8);
+	CALLI('log');_MOVF(FAC,F21);
+	_MOVF(F2,FAC);LDI(F21);_FMUL();_MOVF(FAC,F8);
+	CALLI('exp');
+	_SP(-10+40);_FMUL();
+	label('.12');
+	_EPILOGUE(40,10,0xfc);
+# ======== ('DATA', '.30', code2, 0, 1)
+def code2():
+	label('.30');
+	bytes(138,122,0,0,0); # 1000
+# ======== ('DATA', '.27', code3, 0, 1)
+def code3():
+	label('.27');
+	bytes(129,128,0,0,0); # -1
+# ======== ('DATA', '.16', code4, 0, 1)
+def code4():
+	label('.16');
+	bytes(0,0,0,0,0); # 0
+# ======== ('DATA', '.11', code5, 0, 4)
+def code5():
+	align(4);
+	label('.11');
+	words(0,0); # 0
+# ======== ('DATA', '.10', code6, 0, 4)
+def code6():
+	align(4);
+	label('.10');
+	words(1,0); # 1
+# ======== ('DATA', '.4', code7, 0, 1)
+def code7():
+	label('.4');
+	bytes(129,0,0,0,0); # 1
+# ======== (epilog)
+code=[
+	('CODE', '_ipow', code0),
+	('EXPORT', 'pow'),
+	('CODE', 'pow', code1),
+	('IMPORT', 'modf'),
+	('IMPORT', 'log'),
+	('IMPORT', 'exp'),
+	('IMPORT', 'errno'),
+	('IMPORT', '_fexception'),
+	('DATA', '.30', code2, 0, 1),
+	('DATA', '.27', code3, 0, 1),
+	('DATA', '.16', code4, 0, 1),
+	('DATA', '.11', code5, 0, 4),
+	('DATA', '.10', code6, 0, 4),
+	('DATA', '.4', code7, 0, 1) ]
+module(code=code, name='../gigatron/libc/pow.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

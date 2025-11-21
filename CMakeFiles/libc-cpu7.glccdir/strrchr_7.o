@@ -1,0 +1,42 @@
+#VCPUv7
+
+# ======== ('CODE', 'strrchr', code0)
+def code0():
+	label('strrchr');
+	_PROLOGUE(16,6,0xf0); # save=R4-7
+	MOVW(R8,R7);
+	MOVW(R9,R6);
+	MOVQW(0,R5);
+	MOVW(R7,R4);
+	_BRA('.5');
+	label('.7');
+	LDW(R4);STW(R5);
+	INCV(R4);
+	label('.8');
+	PEEKV(R4);
+	_BEQ('.10');
+	XORW(R6);_BEQ('.7');
+	label('.10');
+	label('.5');
+	PEEKV(R4);_BEQ('.11');
+	MOVW(R4,R8);
+	LD(R6);STW(R9);
+	MOVIW(0xffff,R10);
+	CALLI('__memchr2');
+	STW(R4);
+	_BNE('.8');
+	label('.11');
+	LDW(R5);
+	label('.3');
+	_EPILOGUE(16,6,0xf0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'strrchr'),
+	('CODE', 'strrchr', code0),
+	('IMPORT', '__memchr2') ]
+module(code=code, name='../gigatron/libc/strrchr.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

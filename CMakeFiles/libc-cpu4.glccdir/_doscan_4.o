@@ -1,0 +1,425 @@
+#VCPUv4
+
+# ======== ('CODE', '_doscan_next', code0)
+def code0():
+	label('_doscan_next');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	LDI(4);ADDW(R7);STW(R23);
+	DEEK();ADDI(1);DOKE(R23);
+	LDI(2);ADDW(R7);DEEK();STW(R8);
+	LDWI('fgetc');CALL(vAC);
+	DOKE(R7);
+	
+	label('.6');
+	_EPILOGUE(8,4,0x80,saveAC=True);
+# ======== ('CODE', 'spc', code1)
+def code1():
+	label('spc');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	_BRA('.9');
+	label('.8');
+	LDW(R7);STW(R8);
+	LDWI('_doscan_next');CALL(vAC);
+	label('.9');
+	LDW(R7);DEEK();STW(R8);
+	LDWI('isspace');CALL(vAC);
+	_BNE('.8');
+	label('.7');
+	_EPILOGUE(8,4,0x80);
+# ======== ('CODE', 'check_set', code2)
+def code2():
+	label('check_set');
+	PUSH();
+	LDI(0);STW(R19);
+	STW(R18);
+	LDI(1);ADDW(R8);STW(R8);
+	
+	PEEK();
+	STW(R17);
+	XORI(94);_BNE('.15');
+	LDI(1);ADDW(R8);STW(R8);
+	
+	PEEK();STW(R17);
+	LDI(1);STW(R19);
+	_BRA('.15');
+	label('.14');
+	LDW(R17);XORW(R9);_BNE('.17');
+	LDI(1);STW(R18);
+	label('.17');
+	LDI(1);ADDW(R8);STW(R8);
+	
+	PEEK();
+	STW(R17);
+	XORI(93);_BNE('.19');
+	_BRA('.16');
+	label('.19');
+	label('.15');
+	LDW(R17);_BNE('.14');
+	label('.16');
+	LDW(R9);_BEQ('.23');
+	LDW(R18);XORW(R19);_BNE('.21');
+	label('.23');
+	LDW(R8);
+	_BRA('.11');
+	label('.21');
+	LDI(0);
+	label('.11');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'do_str', code3)
+def code3():
+	label('do_str');
+	_PROLOGUE(20,6,0xfc); # save=R2-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDW(R11);STW(R4);
+	LDW(R12);STW(R3);
+	_BRA('.26');
+	label('.25');
+	LDW(R5);_BEQ('.31');
+	LDW(R6);XORI(115);_BNE('.32');
+	LDW(R2);STW(R8);
+	LDWI('isspace');CALL(vAC);
+	_BNE('.31');
+	label('.32');
+	LDW(R6);XORI(91);_BNE('.28');
+	LDW(R4);STW(R8);
+	LDW(R2);STW(R9);
+	LDWI('check_set');CALL(vAC);
+	_BEQ('.28');
+	label('.31');
+	_BRA('.27');
+	label('.28');
+	LDW(R3);_BEQ('.33');
+	LDW(R2);POKE(R3);
+	LDI(1);ADDW(R3);STW(R3);
+	label('.33');
+	LDW(R5);SUBI(1);STW(R5);
+	LDW(R7);STW(R8);
+	LDWI('_doscan_next');CALL(vAC);
+	label('.26');
+	LDW(R7);DEEK();
+	STW(R2);
+	_BGT('.25');
+	label('.27');
+	LDW(R6);XORI(99);_BEQ('.35');
+	LDI(0);POKE(R3);
+	label('.35');
+	LDI(1);
+	label('.24');
+	_EPILOGUE(20,6,0xfc,saveAC=True);
+# ======== ('CODE', 'do_lng', code4)
+def code4():
+	label('do_lng');
+	_PROLOGUE(36,4,0xff); # save=R0-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDW(R11);STW(R4);
+	_SP(-12+36);STW(R1);
+	LDI(0);DOKE(R1);
+	LDI(2);ADDW(R1);STW(R23);
+	LDI(0);DOKE(R23);
+	LDW(R6);XORI(100);_BNE('.38');
+	LDI(2);ADDW(R1);STW(R23);
+	LDI(10);DOKE(R23);
+	_BRA('.39');
+	label('.38');
+	LDW(R6);XORI(120);_BNE('.40');
+	LDI(2);ADDW(R1);STW(R23);
+	LDI(16);DOKE(R23);
+	_BRA('.41');
+	label('.40');
+	LDW(R6);XORI(111);_BNE('.42');
+	LDI(2);ADDW(R1);STW(R23);
+	LDI(8);DOKE(R23);
+	label('.42');
+	label('.41');
+	label('.39');
+	LDI(4);ADDW(R1);STW(T2);_MOVL('.44',[T2]);
+	_BRA('.46');
+	label('.45');
+	LDW(R7);STW(R8);
+	LDWI('_doscan_next');CALL(vAC);
+	label('.46');
+	LDW(R1);STW(R8);
+	LDW(R7);DEEK();STW(R9);
+	LDWI('_strtol_push');CALL(vAC);
+	_BNE('.45');
+	_SP(-4+36);STW(R0);
+	LDW(R5);ANDI(2);_BEQ('.48');
+	LDW(R4);STW(R0);
+	label('.48');
+	LDW(R6);XORI(100);_BEQ('.55');
+	LDW(R6);XORI(105);_BNE('.53');
+	label('.55');
+	_SP(-14+36);STW(R23);
+	LDI(1);DOKE(R23);
+	_BRA('.54');
+	label('.53');
+	_SP(-14+36);STW(R23);
+	LDI(0);DOKE(R23);
+	label('.54');
+	_SP(-14+36);DEEK();
+	STW(R3);
+	_BEQ('.50');
+	LDW(R1);STW(R8);
+	LDW(R0);STW(R9);
+	LDWI('_strtol_decode_s');CALL(vAC);
+	STW(R2);
+	_BRA('.51');
+	label('.50');
+	LDW(R1);STW(R8);
+	LDW(R0);STW(R9);
+	LDWI('_strtol_decode_u');CALL(vAC);
+	STW(R2);
+	label('.51');
+	LDW(R2);_BEQ('.56');
+	LDW(R4);_BEQ('.56');
+	LDW(R5);ANDI(2);_BNE('.56');
+	_MOVL([SP,-4+36],L22);
+	LDW(L22);DOKE(R4);
+	LDW(R3);_BEQ('.61');
+	_MOVL([SP,-4+36],L22);
+	LDW(L22);_STLS(LAC);LDI(L22);_LCMPX();_BNE('.60');
+	label('.61');
+	LDW(R3);_BNE('.58');
+	_MOVL([SP,-4+36],L22);
+	LDW(L22);_STLU(LAC);LDI(L22);_LCMPX();_BEQ('.58');
+	label('.60');
+	LDWI('errno');STW(R23);
+	LDI(2);DOKE(R23);
+	label('.58');
+	label('.56');
+	LDW(R2);
+	label('.37');
+	_EPILOGUE(36,4,0xff,saveAC=True);
+# ======== ('CODE', 'parsespec', code5)
+def code5():
+	label('parsespec');
+	PUSH();
+	LDI(0);DOKE(R9);
+	DOKE(R10);
+	LDI(1);ADDW(R8);STW(R8);
+	
+	PEEK();STW(R19);
+	XORI(42);_BNE('.66');
+	LDW(R10);DEEK();ORI(1);DOKE(R10);
+	LDI(1);ADDW(R8);STW(R8);
+	
+	PEEK();STW(R19);
+	_BRA('.66');
+	label('.65');
+	LDW(R10);DEEK();ORI(8);DOKE(R10);
+	LDW(R9);DEEK();STW(T3);LSLW();LSLW();ADDW(T3);LSLW();ADDW(R19);SUBI(48);DOKE(R9);
+	LDI(1);ADDW(R8);STW(R8);
+	
+	PEEK();STW(R19);
+	label('.66');
+	LDW(R19);_CMPIS(48);_BLT('.68');
+	LDW(R19);_CMPIS(57);_BLE('.65');
+	label('.68');
+	LDW(R19);XORI(108);_BEQ('.72');
+	LDW(R19);XORI(76);_BEQ('.72');
+	LDW(R19);XORI(104);_BNE('.69');
+	label('.72');
+	LDW(R19);XORI(104);_BEQ('.73');
+	LDW(R10);DEEK();ORI(2);DOKE(R10);
+	label('.73');
+	LDI(1);ADDW(R8);STW(R8);
+	
+	PEEK();STW(R19);
+	label('.69');
+	LDW(R10);DEEK();ANDI(8);_BNE('.75');
+	LDW(R19);XORI(99);_BNE('.78');
+	LDI(1);STW(R18);
+	_BRA('.79');
+	label('.78');
+	LDWI(0xffff);STW(R18);
+	label('.79');
+	LDW(R18);DOKE(R9);
+	label('.75');
+	LDW(R8);
+	label('.62');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '_doscan', code6)
+def code6():
+	label('_doscan');
+	_PROLOGUE(40,12,0xfe); # save=R1-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	_SP(-12+40);STW(R4);
+	STW(R8);
+	LDI(0);STW(R9);
+	LDI(8);STW(R10);
+	LDWI('memset');CALL(vAC);
+	LDI(2);ADDW(R4);STW(R23);
+	LDW(R7);DOKE(R23);
+	STW(R8);
+	LDWI('fgetc');CALL(vAC);
+	DOKE(R4);
+	_BRA('.84');
+	label('.81');
+	LDW(R1);STW(R8);
+	LDWI('isspace');CALL(vAC);
+	_BEQ('.85');
+	LDW(R4);STW(R8);
+	LDWI('spc');CALL(vAC);
+	_BRA('.82');
+	label('.85');
+	LDW(R1);XORI(37);_BNE('.89');
+	LDW(R6);STW(R23);
+	ADDI(1);STW(R22);
+	PEEK();XORI(37);_BNE('.87');
+	LDW(R22);STW(R6);
+	LDW(R23);_BEQ('.87');
+	label('.89');
+	LDW(R4);DEEK();XORW(R1);_BEQ('.90');
+	_BRA('.83');
+	label('.90');
+	LDW(R4);STW(R8);
+	LDWI('_doscan_next');CALL(vAC);
+	_BRA('.82');
+	label('.87');
+	LDW(R6);STW(R8);
+	_SP(-2+40);STW(R9);
+	_SP(-4+40);STW(R10);
+	LDWI('parsespec');CALL(vAC);
+	STW(R6);
+	PEEK();STW(R1);
+	LDI(0);STW(R3);
+	_SP(-4+40);DEEK();ANDI(1);_BNE('.92');
+	LDWI(0xfffe);STW(R23);
+	LDI(3);ADDW(R5);ANDW(R23);STW(R5);
+	
+	SUBI(-v(-2));DEEK();STW(R3);
+	label('.92');
+	LDW(R1);XORI(110);_BNE('.96');
+	LDW(R3);_BEQ('.96');
+	LDI(4);ADDW(R4);DEEK();DOKE(R3);
+	_BRA('.82');
+	label('.96');
+	LDW(R1);XORI(99);_BEQ('.98');
+	LDW(R1);XORI(91);_BEQ('.98');
+	LDW(R4);STW(R8);
+	LDWI('spc');CALL(vAC);
+	label('.98');
+	LDI(4);ADDW(R4);DEEK();STW(R2);
+	LDW(R1);XORI(91);_BEQ('.102');
+	LDW(R1);_CMPIS(91);_BLT('.100');
+	label('.107');
+	LDW(R1);_CMPIS(99);_BLT('.100');
+	LDW(R1);_CMPIS(120);_BGT('.100');
+	LDWI(v('.108')-198);ADDW(R1);ADDW(R1);DEEK();CALL(vAC);
+	label('.102');
+	LDW(R4);STW(R8);
+	LDW(R1);STW(R9);
+	_SP(-2+40);DEEK();STW(R10);
+	LDW(R6);STW(R11);
+	LDW(R3);STW(R12);
+	LDWI('do_str');CALL(vAC);STW(R23);
+	_SP(-2+40);STW(R22);
+	LDW(R23);DOKE(R22);
+	LDW(R1);XORI(91);_BNE('.101');
+	LDW(R6);STW(R8);
+	LDI(0);STW(R9);
+	LDWI('check_set');CALL(vAC);
+	STW(R6);
+	_BRA('.101');
+	label('.105');
+	LDW(R4);STW(R8);
+	LDW(R1);STW(R9);
+	_SP(-4+40);DEEK();STW(R10);
+	LDW(R3);STW(R11);
+	LDWI('do_lng');CALL(vAC);STW(R23);
+	_SP(-2+40);STW(R22);
+	LDW(R23);DOKE(R22);
+	_BRA('.101');
+	label('.106');
+	LDW(R4);STW(R8);
+	LDW(R3);STW(R9);
+	LDWI('_doscan_double');CALL(vAC);STW(R23);
+	_SP(-2+40);STW(R22);
+	LDW(R23);DOKE(R22);
+	label('.100');
+	label('.101');
+	LDI(4);ADDW(R4);DEEK();_CMPWS(R2);_BLE('.83');
+	_SP(-2+40);DEEK();_BEQ('.83');
+	LDI(6);ADDW(R4);STW(R23);
+	DEEK();ADDI(1);DOKE(R23);
+	label('.82');
+	LDI(1);ADDW(R6);STW(R6);
+	label('.84');
+	LDW(R6);PEEK();
+	STW(R1);
+	_BNE('.81');
+	label('.83');
+	LDW(R4);DEEK();STW(R8);
+	LDI(2);ADDW(R4);DEEK();STW(R9);
+	LDWI('ungetc');CALL(vAC);
+	LDI(6);ADDW(R4);DEEK();
+	label('.80');
+	_EPILOGUE(40,12,0xfe,saveAC=True);
+# ======== ('DATA', '.108', code7, 0, 2)
+def code7():
+	align(2);
+	label('.108');
+	words('.102');
+	words('.105');
+	words('.106');
+	words('.106');
+	words('.106');
+	words('.100');
+	words('.105');
+	words('.100');
+	words('.100');
+	words('.100');
+	words('.100');
+	words('.100');
+	words('.105');
+	words('.105');
+	words('.100');
+	words('.100');
+	words('.102');
+	words('.100');
+	words('.105');
+	words('.100');
+	words('.100');
+	words('.105');
+# ======== ('DATA', '.44', code8, 0, 4)
+def code8():
+	align(4);
+	label('.44');
+	words(0,0); # 0
+# ======== (epilog)
+code=[
+	('EXPORT', '_doscan_next'),
+	('CODE', '_doscan_next', code0),
+	('CODE', 'spc', code1),
+	('CODE', 'check_set', code2),
+	('CODE', 'do_str', code3),
+	('CODE', 'do_lng', code4),
+	('EXPORT', 'parsespec'),
+	('CODE', 'parsespec', code5),
+	('EXPORT', '_doscan'),
+	('CODE', '_doscan', code6),
+	('DATA', '.108', code7, 0, 2),
+	('IMPORT', '_doscan_double'),
+	('IMPORT', 'ungetc'),
+	('IMPORT', 'fgetc'),
+	('IMPORT', '_strtol_decode_s'),
+	('IMPORT', '_strtol_decode_u'),
+	('IMPORT', '_strtol_push'),
+	('IMPORT', 'errno'),
+	('IMPORT', 'memset'),
+	('IMPORT', 'isspace'),
+	('DATA', '.44', code8, 0, 4) ]
+module(code=code, name='../gigatron/libc/_doscan.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

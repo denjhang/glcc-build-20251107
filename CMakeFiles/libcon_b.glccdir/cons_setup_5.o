@@ -1,0 +1,65 @@
+#VCPUv5
+
+# ======== ('CODE', 'console_exitm_msgfunc', code0)
+def code0():
+	label('console_exitm_msgfunc');
+	_PROLOGUE(16,6,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	_BEQ('.16');
+	LDI(3);STW('console_state');
+	label('.18');
+	LDWI('console_info');DEEK();STW(v('console_state')+2);
+	label('.19');
+	label('.22');
+	LDWI(257);STW(v('console_state')+4);
+	label('.23');
+	LDW(R6);STW(R8);
+	LDWI(v('console_info')+2);DEEK();STW(R9);
+	CALLI('console_print');
+	label('.16');
+	LDI(0);STW(R5);
+	LDWI(0x100);PEEK();ORI(128);ST(v(R4)+1);LDI(0);ST(R4);
+	LDWI(0xe0f0);STW(R8);
+	CALLI('SYS_ExpanderControl');
+	LDWI('ctrlBits_v5');PEEK();ANDI(63);STW(R8);
+	CALLI('SYS_ExpanderControl');
+	_BRA('.28');
+	label('.27');
+	INC(R5);
+	LDW(R5);ST(R23);
+	LD(R7);ADDW(R4);STW(R22);
+	LDW(R23);POKE(R22);
+	label('.28');
+	_BRA('.27');
+	label('.15');
+	_EPILOGUE(16,6,0xf0);
+# ======== ('CODE', '_console_setup', code1)
+def code1():
+	label('_console_setup');
+	_PROLOGUE(4,2,0x0); # save=None
+	LDWI(4064);STW(R8);
+	CALLI('SYS_ExpanderControl');
+	LDWI('_exitm_msgfunc');STW(R23);
+	LDWI('console_exitm_msgfunc');DOKE(R23);
+	CALLI('console_clear_screen');
+	label('.30');
+	_EPILOGUE(4,2,0x0);
+# ======== (epilog)
+code=[
+	('CODE', 'console_exitm_msgfunc', code0),
+	('EXPORT', '_console_setup'),
+	('CODE', '_console_setup', code1),
+	('IMPORT', 'SYS_ExpanderControl'),
+	('IMPORT', 'ctrlBits_v5', 'AT', 0x1f8),
+	('IMPORT', '_exitm_msgfunc'),
+	('IMPORT', 'console_clear_screen'),
+	('IMPORT', 'console_print'),
+	('IMPORT', 'console_state'),
+	('IMPORT', 'console_info') ]
+module(code=code, name='../gigatron/map512k/libcon_b/cons_setup.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

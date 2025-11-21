@@ -1,0 +1,145 @@
+#VCPUv7
+
+# ======== ('DATA', 'sincof', code0, 0, 1)
+def code0():
+	label('sincof');
+	bytes(96,46,199,232,255); # 1.58962e-10
+	bytes(103,215,47,45,73); # -2.50507e-08
+	bytes(110,56,239,26,180); # 2.75573e-06
+	bytes(116,208,13,0,206); # -0.000198413
+	bytes(122,8,136,136,137); # 0.00833333
+	bytes(126,170,170,170,171); # -0.166667
+# ======== ('DATA', 'coscof', code1, 30, 1)
+def code1():
+	label('coscof');
+	bytes(92,199,210,77,4); # -1.13585e-11
+	bytes(100,15,116,235,218); # 2.08757e-09
+	bytes(107,147,242,123,245); # -2.75573e-07
+	bytes(113,80,13,0,206); # 2.48016e-05
+	bytes(119,182,11,96,182); # -0.00138889
+	bytes(124,42,170,170,171); # 0.0416667
+# ======== ('CODE', 'k_sin_over_x', code2)
+def code2():
+	label('k_sin_over_x');
+	_PROLOGUE(20,12,0xe0); # save=R5-7
+	_MOVF(F8,F5);
+	_MOVF(F5,FAC);LDI(F5);_FMUL();_MOVF(FAC,F5);
+	_MOVF(F5,F8);
+	MOVIW('sincof',R11);
+	MOVQW(5,R12);
+	CALLI('_polevl');
+	LDI(F5);_FMUL();LDWI('_fone');_FADD();
+	label('.3');
+	_EPILOGUE(20,12,0xe0);
+# ======== ('CODE', 'k_cos', code3)
+def code3():
+	label('k_cos');
+	_PROLOGUE(20,12,0xe0); # save=R5-7
+	_MOVF(F8,F5);
+	_MOVF(F5,FAC);LDI(F5);_FMUL();_MOVF(FAC,F5);
+	_MOVF(F5,F8);
+	MOVIW('coscof',R11);
+	MOVQW(5,R12);
+	CALLI('_polevl');
+	LDI(F5);_FMUL();LDI(F5);_FMUL();_MOVF(FAC,F21);
+	_MOVF(F5,FAC);LDWI('_fhalf');_FMUL();LDWI('_fone');_FSUBR();LDI(F21);_FADD();
+	label('.4');
+	_EPILOGUE(20,12,0xe0);
+# ======== ('CODE', 'sin_e', code4)
+def code4():
+	label('sin_e');
+	_PROLOGUE(28,14,0xf8); # save=R3-7
+	_MOVF(F8,F5);
+	MOVW(R11,R4);
+	_MOVF(F5,F8);
+	_MOVF('_pi_over_4',F11);
+	_SP(-2+28);STW(R14);
+	CALLI('_fmodquo');
+	_MOVF(FAC,F5);
+	_MOVF(F5,FAC);LDWI('_fzero');_FCMP();_BGE('.6');
+	_LDLW(-2+28);STW(R23);
+	LDW(R4);SUBW(R23);SUBI(1);STW(R3);
+	LDWI('_pi_over_4');_FADD();_MOVF(FAC,F5);
+	_BRA('.7');
+	label('.6');
+	_LDLW(-2+28);ADDW(R4);STW(R3);
+	label('.7');
+	LDW(R3);ANDI(1);_BEQ('.8');
+	_MOVF(F5,FAC);LDWI('_pi_over_4');_FSUBR();_MOVF(FAC,F5);
+	label('.8');
+	LDI(1);ADDW(R3);ANDI(2);_BEQ('.10');
+	_MOVF(F5,F8);
+	CALLI('k_cos');
+	_MOVF(FAC,F5);
+	_BRA('.11');
+	label('.10');
+	_MOVF(F5,F8);
+	CALLI('k_sin_over_x');
+	LDI(F5);_FMUL();_MOVF(FAC,F5);
+	label('.11');
+	LDW(R3);ANDI(4);_BEQ('.12');
+	_MOVF(F5,FAC);_FNEG();_MOVF(FAC,F5);
+	label('.12');
+	_MOVF(F5,FAC);
+	label('.5');
+	_EPILOGUE(28,14,0xf8);
+# ======== ('CODE', 'sin', code5)
+def code5():
+	label('sin');
+	_PROLOGUE(16,8,0xe0); # save=R5-7
+	_MOVF(F8,F5);
+	_MOVF(F5,F8);
+	MOVQW(0,R11);
+	CALLI('sin_e');
+	
+	label('.14');
+	_EPILOGUE(16,8,0xe0);
+# ======== ('CODE', 'cos', code6)
+def code6():
+	label('cos');
+	_PROLOGUE(16,8,0xe0); # save=R5-7
+	_MOVF(F8,F5);
+	_MOVF(F5,F8);
+	MOVQW(2,R11);
+	CALLI('sin_e');
+	
+	label('.15');
+	_EPILOGUE(16,8,0xe0);
+# ======== ('CODE', 'tan', code7)
+def code7():
+	label('tan');
+	_PROLOGUE(20,6,0xe0); # save=R5-7
+	_MOVF(F8,F5);
+	_MOVF(F5,F8);
+	CALLI('sin');_MOVF(FAC,F21);
+	STW(T0);_MOVF(F21,[SP,-5+20]);LDW(T0) #genspill
+	_MOVF(F5,F8);
+	CALLI('cos');_MOVF(FAC,F18);
+	_MOVF([SP,-5+20],FAC);LDI(F18);_FDIV();
+	label('.16');
+	_EPILOGUE(20,6,0xe0);
+# ======== (epilog)
+code=[
+	('DATA', 'sincof', code0, 0, 1),
+	('DATA', 'coscof', code1, 30, 1),
+	('CODE', 'k_sin_over_x', code2),
+	('CODE', 'k_cos', code3),
+	('CODE', 'sin_e', code4),
+	('EXPORT', 'sin'),
+	('CODE', 'sin', code5),
+	('EXPORT', 'cos'),
+	('CODE', 'cos', code6),
+	('EXPORT', 'tan'),
+	('CODE', 'tan', code7),
+	('IMPORT', '_polevl'),
+	('IMPORT', '_fmodquo'),
+	('IMPORT', '_fhalf'),
+	('IMPORT', '_fone'),
+	('IMPORT', '_fzero'),
+	('IMPORT', '_pi_over_4') ]
+module(code=code, name='../gigatron/libc/sin.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

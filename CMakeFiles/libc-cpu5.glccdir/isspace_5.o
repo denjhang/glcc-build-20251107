@@ -1,0 +1,28 @@
+#VCPUv5
+
+# ======== ('CODE', 'isspace', code0)
+def code0():
+	label('isspace');
+	PUSH();
+	LDW(R8);XORI(32);_BEQ('.5');
+	LDW(R8);SUBI(9);_BLT('.3');
+	LDW(R8);SUBI(13);_BGT('.3');
+	label('.5');
+	LDI(1);STW(R19);
+	_BRA('.4');
+	label('.3');
+	LDI(0);STW(R19);
+	label('.4');
+	LDW(R19);
+	label('.1');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'isspace'),
+	('CODE', 'isspace', code0) ]
+module(code=code, name='../gigatron/libc/isspace.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

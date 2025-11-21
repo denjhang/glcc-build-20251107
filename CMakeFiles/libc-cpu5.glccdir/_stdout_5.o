@@ -1,0 +1,39 @@
+#VCPUv5
+
+# ======== ('DATA', '_iov1', code0, 8, 2)
+def code0():
+	align(2);
+	label('_iov1');
+	words('console_writall');
+	words(0);
+	space(4);
+# ======== ('DATA', '_iob1', code1, 6, 2)
+def code1():
+	align(2);
+	label('_iob1');
+	bytes(194); # 194
+	bytes(0); # 0
+	words('_iov1');
+	words(1);
+# ======== ('DATA', '_iob2', code2, 6, 2)
+def code2():
+	align(2);
+	label('_iob2');
+	bytes(130); # 130
+	bytes(0); # 0
+	words('_iov1');
+	words(2);
+# ======== (epilog)
+code=[
+	('DATA', '_iov1', code0, 8, 2),
+	('EXPORT', '_iob1'),
+	('DATA', '_iob1', code1, 6, 2),
+	('EXPORT', '_iob2'),
+	('DATA', '_iob2', code2, 6, 2),
+	('IMPORT', 'console_writall') ]
+module(code=code, name='../gigatron/libc/_stdout.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

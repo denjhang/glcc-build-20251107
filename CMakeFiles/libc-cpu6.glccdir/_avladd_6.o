@@ -1,0 +1,51 @@
+#VCPUv6
+
+# ======== ('CODE', '_avl_add', code0)
+def code0():
+	label('_avl_add');
+	_PROLOGUE(48,4,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	_SP(-2+48);STW(R4);
+	LDI(0);DOKE(R4);
+	_BRA('.6');
+	label('.5');
+	LDW(R6);STW(R8);
+	DEEKV(R7);STW(R9);
+	CALL(R5);
+	STW(R3);
+	_BNE('.8');
+	DEEKV(R7);
+	_BRA('.3');
+	label('.8');
+	LDW(R3);_BGE('.10');
+	DEEKV(R7);ADDI(2);STW(R7);
+	_BRA('.11');
+	label('.10');
+	DEEKV(R7);ADDI(4);STW(R7);
+	label('.11');
+	label('.6');
+	LDW(R4);SUBI(-v(-2));STW(R4);
+	LDW(R7);DOKE(R4);
+	DEEK();_BNE('.5');
+	LDI(0);STW(R23);
+	LDI(4);ADDW(R6);DOKEA(R23);
+	LDI(2);ADDW(R6);DOKEA(R23);
+	LDW(R6);DOKE(R7);
+	LDW(R4);STW(R8);
+	CALLI('__avl_rebal');
+	LDI(0);
+	label('.3');
+	_EPILOGUE(48,4,0xf8,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', '_avl_add'),
+	('CODE', '_avl_add', code0),
+	('IMPORT', '__avl_rebal') ]
+module(code=code, name='../gigatron/libc/_avladd.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,67 @@
+#VCPUv5
+
+# ======== ('CODE', '_strtok', code0)
+def code0():
+	label('_strtok');
+	_PROLOGUE(16,4,0xf8); # save=R3-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDW(R7);_BEQ('.2');
+	DOKE(R5);
+	label('.2');
+	LDW(R5);DEEK();STW(R3);
+	STW(R8);
+	LDW(R6);STW(R9);
+	CALLI('strspn');
+	ADDW(R3);STW(R4);
+	PEEK();_BNE('.4');
+	LDI(0);
+	_BRA('.1');
+	label('.4');
+	LDW(R4);STW(R8);
+	LDW(R6);STW(R9);
+	CALLI('strcspn');
+	ADDW(R4);STW(R3);
+	PEEK();_BEQ('.6');
+	LDW(R3);STW(R23);
+	ADDI(1);STW(R3);
+	LDI(0);POKE(R23);
+	label('.6');
+	LDW(R3);DOKE(R5);
+	LDW(R4);
+	label('.1');
+	_EPILOGUE(16,4,0xf8,saveAC=True);
+# ======== ('DATA', '.9', code1, 2, 2)
+def code1():
+	align(2);
+	label('.9');
+	words(0);
+# ======== ('CODE', 'strtok', code2)
+def code2():
+	label('strtok');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R7);STW(R8);
+	LDW(R6);STW(R9);
+	LDWI('.9');STW(R10);
+	CALLI('_strtok');
+	
+	label('.8');
+	_EPILOGUE(12,6,0xc0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', '_strtok'),
+	('CODE', '_strtok', code0),
+	('DATA', '.9', code1, 2, 2),
+	('EXPORT', 'strtok'),
+	('CODE', 'strtok', code2),
+	('IMPORT', 'strspn'),
+	('IMPORT', 'strcspn') ]
+module(code=code, name='../gigatron/libc/strtok.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

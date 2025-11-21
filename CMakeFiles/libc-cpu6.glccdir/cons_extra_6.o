@@ -1,0 +1,80 @@
+#VCPUv6
+
+# ======== ('CODE', 'console_clear_line', code0)
+def code0():
+	label('console_clear_line');
+	_PROLOGUE(12,6,0x80); # save=R7
+	LDW(R8);STW(R7);
+	_BLT('.16');
+	LDWI('console_info');DEEK();_CMPWS(R7);_BLE('.16');
+	_SP(-2+12);STW(R23);
+	LDWI(v('console_info')+4);ADDW(R7);PEEK();ADDWI('videoTable');PEEK();DOKE(R23);
+	ST(v(R8)+1);MOVQB(0,R8);
+	LDW('console_state');STW(R9);
+	MOVQW(8,R10);
+	CALLI('_console_clear');
+	label('.16');
+	label('.15');
+	_EPILOGUE(12,6,0x80);
+# ======== ('CODE', 'console_scroll', code1)
+def code1():
+	label('console_scroll');
+	_PROLOGUE(20,0,0x0); # save=None
+	LDW(R9);SUBW(R8);STW(R16);
+	SUBI(1);_BLE('.20');
+	LDW(R8);STW(R19);
+	_BRA('.25');
+	label('.22');
+	LDWI(v('console_info')+4);ADDW(R19);PEEK();ADDWI('videoTable');PEEKA(R23);
+	_SP(-15+20);ADDW(R19);POKEA(R23);
+	label('.23');
+	INCV(R19);
+	label('.25');
+	LDW(R19);XORW(R9);_BNE('.22');
+	LDW(R8);STW(R19);
+	_BRA('.30');
+	label('.27');
+	LDW(R19);ADDW(R10);STW(R18);
+	_BRA('.32');
+	label('.31');
+	LDW(R18);ADDW(R16);STW(R18);
+	label('.32');
+	LDW(R18);_CMPWS(R8);_BLT('.31');
+	_BRA('.35');
+	label('.34');
+	LDW(R18);SUBW(R16);STW(R18);
+	label('.35');
+	LDW(R18);_CMPWS(R9);_BGE('.34');
+	_SP(-15+20);ADDW(R18);PEEK();STW(R18);
+	LDWI(v('console_info')+4);ADDW(R19);PEEK();ADDWI('videoTable');STW(R15);
+	MOVQW(0,R17);
+	label('.38');
+	LDW(R18);POKE(R15);
+	label('.39');
+	INCV(R17);
+	LDI(2);ADDW(R15);STW(R15);
+	INCV(R18);
+	LDW(R17);XORI(8);_BNE('.38');
+	label('.28');
+	INCV(R19);
+	label('.30');
+	LDW(R19);XORW(R9);_BNE('.27');
+	label('.20');
+	label('.19');
+	_EPILOGUE(20,0,0x0);
+# ======== (epilog)
+code=[
+	('EXPORT', 'console_clear_line'),
+	('CODE', 'console_clear_line', code0),
+	('EXPORT', 'console_scroll'),
+	('CODE', 'console_scroll', code1),
+	('IMPORT', 'videoTable'),
+	('IMPORT', '_console_clear'),
+	('IMPORT', 'console_state'),
+	('IMPORT', 'console_info') ]
+module(code=code, name='../gigatron/libc/cons_extra.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

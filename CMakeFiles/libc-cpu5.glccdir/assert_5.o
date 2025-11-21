@@ -1,0 +1,37 @@
+#VCPUv5
+
+# ======== ('CODE', '_assertfail', code0)
+def code0():
+	label('_assertfail');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	LDI(0);STW(R8);
+	LDW(R7);STW(R9);
+	CALLI('_raisem');
+	LDI(0);
+	label('.3');
+	_EPILOGUE(8,4,0x80,saveAC=True);
+# ======== ('CODE', 'assert', code1)
+def code1():
+	label('assert');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	_BNE('.5');
+	LDI(0);STW(R8);
+	CALLI('_assertfail');
+	label('.5');
+	label('.4');
+	_EPILOGUE(8,4,0x80);
+# ======== (epilog)
+code=[
+	('EXPORT', '_assertfail'),
+	('CODE', '_assertfail', code0),
+	('EXPORT', 'assert'),
+	('CODE', 'assert', code1),
+	('IMPORT', '_raisem') ]
+module(code=code, name='../gigatron/libc/assert.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

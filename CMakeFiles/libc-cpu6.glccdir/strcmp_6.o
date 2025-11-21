@@ -1,0 +1,29 @@
+#VCPUv6
+
+# ======== ('CODE', 'strcmp', code0)
+def code0():
+	label('strcmp');
+	PUSH();
+	_BRA('.3');
+	label('.2');
+	INCV(R8);
+	INCV(R9);
+	label('.3');
+	PEEKV(R9);STW(R18);
+	PEEKV(R8);SUBW(R18);STW(R19);
+	_BNE('.5');
+	LDW(R18);_BNE('.2');
+	label('.5');
+	LDW(R19);
+	label('.1');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'strcmp'),
+	('CODE', 'strcmp', code0) ]
+module(code=code, name='../gigatron/libc/strcmp.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

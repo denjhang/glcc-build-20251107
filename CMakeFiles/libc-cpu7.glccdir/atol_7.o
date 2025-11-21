@@ -1,0 +1,71 @@
+#VCPUv7
+
+# ======== ('CODE', 'atol', code0)
+def code0():
+	label('atol');
+	PUSH();
+	_MOVL('.4',L18);
+	MOVQW(0,R17);
+	PEEKV(R8);STW(R16);
+	_BRA('.6');
+	label('.5');
+	INCV(R8);
+	LDW(R8);
+	PEEK();STW(R16);
+	label('.6');
+	LDW(R16);XORI(32);_BEQ('.5');
+	LDW(R16);SUBI(9);_BLT('.8');
+	LDW(R16);SUBI(13);_BLE('.5');
+	label('.8');
+	LDW(R16);XORI(45);_BNE('.9');
+	INCV(R8);
+	LDW(R8);
+	PEEK();
+	STW(R16);
+	STW(R17);
+	_BRA('.14');
+	label('.9');
+	LDW(R16);XORI(43);_BNE('.14');
+	INCV(R8);
+	LDW(R8);
+	PEEK();STW(R16);
+	_BRA('.14');
+	label('.13');
+	ADDSV(-48,R16);
+	LDW(R16);_STLS(L22);
+	_MOVL(L18,LAC);LDWI('.16');_LMUL();LDI(L22);_LADD();_MOVL(LAC,L18);
+	INCV(R8);
+	LDW(R8);
+	PEEK();STW(R16);
+	label('.14');
+	LDW(R16);SUBI(48);_BLT('.17');
+	LDW(R16);SUBI(57);_BLE('.13');
+	label('.17');
+	LDW(R17);_BEQ('.18');
+	NEGVL(L18);
+	label('.18');
+	_MOVL(L18,LAC);
+	label('.3');
+	tryhop(2);POP();RET()
+# ======== ('DATA', '.16', code1, 0, 4)
+def code1():
+	align(4);
+	label('.16');
+	words(10,0); # 10
+# ======== ('DATA', '.4', code2, 0, 4)
+def code2():
+	align(4);
+	label('.4');
+	words(0,0); # 0
+# ======== (epilog)
+code=[
+	('EXPORT', 'atol'),
+	('CODE', 'atol', code0),
+	('DATA', '.16', code1, 0, 4),
+	('DATA', '.4', code2, 0, 4) ]
+module(code=code, name='../gigatron/libc/atol.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

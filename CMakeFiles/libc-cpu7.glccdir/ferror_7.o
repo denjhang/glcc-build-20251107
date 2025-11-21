@@ -1,0 +1,37 @@
+#VCPUv7
+
+# ======== ('CODE', 'ferror', code0)
+def code0():
+	label('ferror');
+	PUSH();
+	PEEKV(R8);ANDI(4);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'feof', code1)
+def code1():
+	label('feof');
+	PUSH();
+	PEEKV(R8);ANDI(8);
+	label('.6');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'clearerr', code2)
+def code2():
+	label('clearerr');
+	PUSH();
+	PEEKV(R8);ANDI(243);POKE(R8);
+	label('.7');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'ferror'),
+	('CODE', 'ferror', code0),
+	('EXPORT', 'feof'),
+	('CODE', 'feof', code1),
+	('EXPORT', 'clearerr'),
+	('CODE', 'clearerr', code2) ]
+module(code=code, name='../gigatron/libc/ferror.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

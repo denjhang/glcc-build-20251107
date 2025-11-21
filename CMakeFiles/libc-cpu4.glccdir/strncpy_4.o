@@ -1,0 +1,43 @@
+#VCPUv4
+
+# ======== ('CODE', 'strncpy', code0)
+def code0():
+	label('strncpy');
+	_PROLOGUE(16,6,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R10);STW(R5);
+	LDW(R6);STW(R8);
+	LDI(0);STW(R9);
+	LDWI(0xffff);STW(R10);
+	LDWI('__memchr2');CALL(vAC);
+	SUBW(R6);STW(R4);
+	_CMPWU(R5);_BLE('.4');
+	LDW(R5);STW(R4);
+	label('.4');
+	LDW(R7);STW(R8);
+	LDW(R6);STW(R9);
+	LDW(R4);STW(R10);
+	LDWI('memcpy');CALL(vAC);
+	LDW(R4);_CMPWU(R5);_BGE('.6');
+	LDW(R4);ADDW(R7);STW(R8);
+	LDI(0);STW(R9);
+	LDW(R5);SUBW(R4);STW(R10);
+	LDWI('memset');CALL(vAC);
+	label('.6');
+	LDW(R7);
+	label('.3');
+	_EPILOGUE(16,6,0xf0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'strncpy'),
+	('CODE', 'strncpy', code0),
+	('IMPORT', '__memchr2'),
+	('IMPORT', 'memset'),
+	('IMPORT', 'memcpy') ]
+module(code=code, name='../gigatron/libc/strncpy.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

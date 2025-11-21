@@ -1,0 +1,69 @@
+#VCPUv4
+
+# ======== ('CODE', 'mincprintf', code0)
+def code0():
+	label('mincprintf');
+	_PROLOGUE(24,6,0xf0); # save=R4-7
+	_SP(0+24);STW(R23);
+	LDW(R8);DOKE(R23);
+	STW(R6);
+	_SP(2+24);STW(R7);
+	_BRA('.12');
+	label('.11');
+	LDW(R6);PEEK();XORI(37);_BEQ('.14');
+	LDW(R6);STW(R5);
+	_BRA('.17');
+	label('.16');
+	LDI(1);ADDW(R6);STW(R6);
+	label('.17');
+	LDW(R6);PEEK();
+	_BEQ('.19');
+	XORI(37);_BNE('.16');
+	label('.19');
+	LDW(R6);SUBW(R5);STW(R4);
+	_BRA('.15');
+	label('.14');
+	LDI(1);ADDW(R6);STW(R6);
+	PEEK();STW(R4);
+	XORI(115);_BNE('.20');
+	LDWI(0xfffe);STW(R23);
+	LDI(3);ADDW(R7);ANDW(R23);STW(R7);
+	
+	SUBI(-v(-2));DEEK();STW(R5);
+	LDWI(32767);STW(R4);
+	_BRA('.21');
+	label('.20');
+	LDW(R4);XORI(100);_BNE('.12');
+	LDWI(0xfffe);STW(R23);
+	LDI(3);ADDW(R7);ANDW(R23);STW(R7);
+	
+	SUBI(-v(-2));DEEK();STW(R8);
+	_SP(-1+24);STW(R9);
+	LDI(10);STW(R10);
+	LDWI('_itoa');CALL(vAC);
+	STW(R5);
+	LDI(8);STW(R4);
+	label('.25');
+	label('.21');
+	LDI(1);ADDW(R6);STW(R6);
+	label('.15');
+	LDW(R5);STW(R8);
+	LDW(R4);STW(R9);
+	LDWI('console_print');CALL(vAC);
+	label('.12');
+	LDW(R6);PEEK();_BNE('.11');
+	LDI(0);
+	label('.9');
+	_EPILOGUE(24,6,0xf0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'mincprintf'),
+	('CODE', 'mincprintf', code0),
+	('IMPORT', '_itoa'),
+	('IMPORT', 'console_print') ]
+module(code=code, name='../gigatron/libc/mincprintf.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

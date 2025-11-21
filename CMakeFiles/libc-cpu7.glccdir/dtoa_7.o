@@ -1,0 +1,146 @@
+#VCPUv7
+
+# ======== ('CODE', 'dtoa', code0)
+def code0():
+	label('dtoa');
+	_PROLOGUE(40,6,0xff); # save=R0-7
+	_MOVF(F8,[SP,0+40]);
+	MOVW(R11,R7);
+	MOVW(R12,R6);
+	MOVW(R13,R5);
+	MOVW(R7,R1);
+	_SP(1+40);STW(R0);
+	PEEK();ANDI(128);_BEQ('.5');
+	PEEKV(R0);ANDI(127);POKE(R0);
+	LDW(R1);POKEQ(45);
+	INCV(R1);
+	label('.5');
+	_SP(0+40);STW(R8);
+	CALLI('_frexp10p');
+	STW(R4);
+	_SP(0+40);STW(R8);
+	_SP(-1+40);STW(R9);
+	CALLI('_ftoa');
+	STW(R0);
+	_SP(-1+40);SUBW(R0);STW(R3);
+	LDI(1);STW(R2);
+	LDW(R4);ADDW(R3);SUBW(R2);STW(R4);
+	LDW(R6);XORI(103);_BNE('.9');
+	LDW(R5);SUBI(1);_BLE('.9');
+	ADDSV(-1,R5);
+	label('.9');
+	LDW(R6);XORI(102);_BEQ('.13');
+	LDW(R6);XORI(101);_BEQ('.11');
+	LDI(4);ADDW(R4);_BLT('.11');
+	LDW(R4);SUBW(R5);_BGT('.11');
+	label('.13');
+	LDW(R4);ADDV(R2);
+	MOVQW(0,R4);
+	LDW(R6);XORI(102);_BEQ('.14');
+	LDI(1);SUBW(R2);ADDV(R5);
+	label('.14');
+	label('.11');
+	LDW(R2);ADDW(R5);_BGE('.16');
+	MOVQW(0,R3);
+	_BRA('.17');
+	label('.16');
+	LDW(R2);ADDW(R5);SUBW(R3);_BGE('.18');
+	LDW(R2);ADDW(R5);STW(R3);
+	label('.18');
+	label('.17');
+	MOVW(R0,R8);
+	LDW(R3);ADDW(R0);STW(R9);
+	CALLI('_rnda');
+	_BEQ('.20');
+	ADDSV(-1,R0);
+	LDW(R6);XORI(101);_BEQ('.24');
+	LDW(R6);XORI(102);_BEQ('.22');
+	LDW(R4);_BEQ('.22');
+	label('.24');
+	LDW(R3);ADDW(R0);POKEQ(0);
+	INCV(R4);
+	_BRA('.21');
+	label('.22');
+	INCV(R2);
+	label('.20');
+	label('.21');
+	LDI(1);SUBW(R2);
+	STW(R3);
+	_BGE('.25');
+	MOVQW(0,R3);
+	label('.25');
+	LDW(R3);ADDV(R2);
+	_BRA('.28');
+	label('.27');
+	LDW(R2);_BNE('.30');
+	LDW(R1);POKEQ(46);
+	INCV(R1);
+	label('.30');
+	ADDSV(-1,R2);
+	LDW(R2);
+	_BGE('.32');
+	ADDSV(-1,R5);
+	label('.32');
+	ADDSV(-1,R3);
+	LDW(R3);
+	_BGE('.34');
+	PEEKV(R0);_BEQ('.34');
+	PEEKV(R0);POKE(R1);
+	INCV(R0);
+	_BRA('.35');
+	label('.34');
+	LDW(R1);POKEQ(48);
+	label('.35');
+	INCV(R1);
+	label('.28');
+	LDW(R2);_BGT('.27');
+	LDW(R5);_BGT('.27');
+	LDW(R6);XORI(103);_BNE('.36');
+	LDW(R2);_BGE('.36');
+	label('.38');
+	ADDSV(-1,R1);
+	label('.39');
+	PEEKV(R1);XORI(48);_BEQ('.38');
+	PEEKV(R1);XORI(46);_BEQ('.41');
+	INCV(R1);
+	label('.41');
+	label('.36');
+	LDW(R4);_BNE('.45');
+	LDW(R6);XORI(101);_BNE('.43');
+	label('.45');
+	LDW(R1);POKEQ(101);
+	INCV(R1);
+	LDW(R4);_BLT('.46');
+	LDW(R1);POKEQ(43);
+	_BRA('.47');
+	label('.46');
+	NEGV(R4);
+	LDW(R1);POKEQ(45);
+	label('.47');
+	INCV(R1);
+	MOVW(R4,R8);
+	CALLI('_utwoa');
+	STW(R4);
+	LD(v(R4)+1);POKE(R1);
+	INCV(R1);
+	LDW(R4);POKE(R1);
+	INCV(R1);
+	label('.43');
+	LDW(R1);POKEQ(0);
+	LDW(R7);
+	label('.3');
+	_EPILOGUE(40,6,0xff,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'dtoa'),
+	('CODE', 'dtoa', code0),
+	('IMPORT', '_rnda'),
+	('IMPORT', '_ftoa'),
+	('IMPORT', '_utwoa'),
+	('IMPORT', '_frexp10p') ]
+module(code=code, name='../gigatron/libc/dtoa.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,43 @@
+#VCPUv7
+
+# ======== ('CODE', 'fscanf', code0)
+def code0():
+	label('fscanf');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	MOVW(R8,R7);
+	LDW(R9);_STLW(2+12);
+	_SP(4+12);STW(R6);
+	MOVW(R7,R8);
+	_LDLW(2+12);STW(R9);
+	MOVW(R6,R10);
+	CALLI('_doscan');
+	
+	label('.6');
+	_EPILOGUE(12,6,0xc0,saveAC=True);
+# ======== ('CODE', 'scanf', code1)
+def code1():
+	label('scanf');
+	_PROLOGUE(12,8,0x80); # save=R7
+	LDW(R8);_STLW(0+12);
+	_SP(2+12);STW(R7);
+	MOVIW('_iob0',R8);
+	_LDLW(0+12);STW(R9);
+	MOVW(R7,R10);
+	CALLI('_doscan');
+	
+	label('.8');
+	_EPILOGUE(12,8,0x80,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'fscanf'),
+	('CODE', 'fscanf', code0),
+	('EXPORT', 'scanf'),
+	('CODE', 'scanf', code1),
+	('IMPORT', '_doscan'),
+	('IMPORT', '_iob0') ]
+module(code=code, name='../gigatron/libc/fscanf.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

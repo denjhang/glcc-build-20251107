@@ -1,0 +1,219 @@
+#VCPUv5
+
+# ======== ('CODE', '_strtod_push', code0)
+def code0():
+	label('_strtod_push');
+	PUSH();
+	LDW(R8);DEEK();STW(R19);
+	_BNE('.6');
+	LDI(1);STW(R19);
+	LDW(R9);XORI(45);_BNE('.8');
+	LDW(R19);ORI(64);STW(R19);
+	_BRA('.10');
+	label('.8');
+	LDW(R9);XORI(43);_BNE('.11');
+	_BRA('.10');
+	label('.11');
+	label('.6');
+	LDW(R19);ANDI(3);XORI(1);_BNE('.13');
+	LDW(R9);XORI(46);_BNE('.15');
+	LDW(R19);ANDI(32);_BEQ('.17');
+	_BRA('.19');
+	label('.17');
+	LDW(R19);ORI(32);STW(R19);
+	_BRA('.10');
+	label('.15');
+	LDW(R9);SUBI(48);_BLT('.20');
+	LDW(R9);SUBI(57);_BGT('.20');
+	LDI(6);ADDW(R8);_MOVF([vAC],F16);
+	LDW(R19);ORI(16);STW(R19);
+	_MOVF(F16,FAC);LDWI('.24');_FCMP();_BGE('.22');
+	LDW(R19);ANDI(32);_BEQ('.25');
+	LDI(2);ADDW(R8);STW(R23);
+	DEEK();SUBI(1);DOKE(R23);
+	label('.25');
+	LDW(R9);SUBI(48);_STLS(LAC);_FCVI();_MOVF(FAC,F21);
+	_MOVF(F16,FAC);LDWI('_ften');_FMUL();LDI(F21);_FADD();LDI(6);ADDW(R8);_MOVF(FAC,[vAC]);
+	_BRA('.10');
+	label('.22');
+	LDW(R19);ANDI(32);_BNE('.10');
+	LDI(2);ADDW(R8);STW(R23);
+	DEEK();ADDI(1);DOKE(R23);
+	_BRA('.10');
+	label('.20');
+	LDW(R9);ORI(32);XORI(101);_BNE('.29');
+	LDW(R19);XORI(3);STW(R19);
+	LDW(R10);_BEQ('.10');
+	LDI(1);ADDW(R10);PEEK();STW(R9);
+	XORI(43);_BEQ('.35');
+	LDW(R9);XORI(45);_BNE('.33');
+	label('.35');
+	LDI(2);ADDW(R10);PEEK();STW(R9);
+	label('.33');
+	LDW(R9);SUBI(48);_BLT('.38');
+	LDW(R9);SUBI(57);_BLE('.10');
+	label('.38');
+	_BRA('.19');
+	label('.29');
+	label('.13');
+	LDW(R19);ANDI(3);XORI(2);_BNE('.39');
+	LDW(R19);XORI(1);STW(R19);
+	LDW(R9);XORI(45);_BNE('.41');
+	LDW(R19);ORI(8);STW(R19);
+	_BRA('.10');
+	label('.41');
+	LDW(R9);XORI(43);_BNE('.43');
+	_BRA('.10');
+	label('.43');
+	label('.39');
+	LDW(R19);ANDI(3);XORI(3);_BNE('.45');
+	LDW(R9);SUBI(48);_BLT('.47');
+	LDW(R9);SUBI(57);_BGT('.47');
+	LDI(4);ADDW(R8);DEEK();STW(R18);
+	SUBI(250);_BGE('.10');
+	LDI(4);ADDW(R8);STW(R23);
+	LDW(R18);LSLW();LSLW();ADDW(R18);LSLW();ADDW(R9);SUBI(48);DOKE(R23);
+	_BRA('.10');
+	label('.47');
+	label('.45');
+	label('.19');
+	LDI(0);
+	_BRA('.5');
+	label('.10');
+	LDW(R19);DOKE(R8);
+	
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '_strtod_decode', code1)
+def code1():
+	label('_strtod_decode');
+	_PROLOGUE(24,6,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	_SP(-5+24);STW(T2);LDI(6);ADDW(R7);_MOVF([vAC],[T2]);
+	LDI(2);ADDW(R7);DEEK();STW(R5);
+	LDW(R7);DEEK();STW(R4);
+	_SP(-8+24);STW(R23);
+	LDWI('_raise_disposition');DEEK();DOKE(R23);
+	LDW(R4);ANDI(16);_BNE('.52');
+	LDI(0);
+	_BRA('.51');
+	label('.52');
+	LDW(R4);ANDI(8);_BEQ('.54');
+	LDI(4);ADDW(R7);DEEK();STW(R23);
+	LDW(R5);SUBW(R23);STW(R5);
+	_BRA('.55');
+	label('.54');
+	LDI(4);ADDW(R7);DEEK();ADDW(R5);STW(R5);
+	label('.55');
+	LDWI('_raise_code');STW(R23);
+	LDI(0);DOKE(R23);
+	LDWI('_raise_disposition');STW(R23);
+	LDWI('_raise_sets_code');DOKE(R23);
+	_SP(-5+24);STW(R8);
+	LDW(R5);STW(R9);
+	CALLI('_ldexp10p');
+	_MOVF(FAC,[SP,-5+24]);
+	LDWI('_raise_code');DEEK();_BEQ('.56');
+	_MOVF('.58',[SP,-5+24]);
+	LDWI('errno');STW(R23);
+	LDI(2);DOKE(R23);
+	label('.56');
+	LDWI('_raise_disposition');STW(R23);
+	_SP(-8+24);DEEK();DOKE(R23);
+	LDW(R4);ANDI(64);_BEQ('.59');
+	_MOVF([SP,-5+24],FAC);_FNEG();_MOVF(FAC,[SP,-5+24]);
+	label('.59');
+	LDW(R6);_BEQ('.61');
+	STW(T2);_MOVF([SP,-5+24],[T2]);
+	label('.61');
+	LDI(1);
+	label('.51');
+	_EPILOGUE(24,6,0xf0,saveAC=True);
+# ======== ('CODE', 'strtod', code2)
+def code2():
+	label('strtod');
+	_PROLOGUE(36,8,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	_MOVF('_fzero',[SP,-5+36]);
+	_SP(-18+36);STW(R5);
+	LDW(R7);STW(R4);
+	LDW(R5);STW(R8);
+	LDI(0);STW(R9);
+	LDI(12);STW(R10);
+	CALLI('memset');
+	_BRA('.65');
+	label('.64');
+	LDI(1);ADDW(R4);STW(R4);
+	label('.65');
+	LDW(R4);PEEK();STW(R8);
+	CALLI('isspace');
+	_BNE('.64');
+	_BRA('.68');
+	label('.67');
+	LDI(1);ADDW(R4);STW(R4);
+	label('.68');
+	LDW(R5);STW(R8);
+	LDW(R4);PEEK();STW(R9);
+	LDI(1);ADDW(R4);STW(R10);
+	CALLI('_strtod_push');
+	_BNE('.67');
+	LDW(R5);STW(R8);
+	_SP(-5+36);STW(R9);
+	CALLI('_strtod_decode');
+	_BNE('.70');
+	LDW(R7);STW(R4);
+	label('.70');
+	LDW(R6);_BEQ('.72');
+	LDW(R4);DOKE(R6);
+	label('.72');
+	_MOVF([SP,-5+36],FAC);
+	label('.63');
+	_EPILOGUE(36,8,0xf0);
+# ======== ('CODE', 'atof', code3)
+def code3():
+	label('atof');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	STW(R8);
+	LDI(0);STW(R9);
+	CALLI('strtod');
+	
+	label('.74');
+	_EPILOGUE(8,4,0x80);
+# ======== ('DATA', '.58', code4, 0, 1)
+def code4():
+	label('.58');
+	bytes(255,127,255,255,255); # 1.70141e+38
+# ======== ('DATA', '.24', code5, 0, 1)
+def code5():
+	label('.24');
+	bytes(182,14,27,201,191); # 1e+16
+# ======== (epilog)
+code=[
+	('EXPORT', '_strtod_push'),
+	('CODE', '_strtod_push', code0),
+	('EXPORT', '_strtod_decode'),
+	('CODE', '_strtod_decode', code1),
+	('EXPORT', 'strtod'),
+	('CODE', 'strtod', code2),
+	('EXPORT', 'atof'),
+	('CODE', 'atof', code3),
+	('IMPORT', '_ldexp10p'),
+	('IMPORT', '_ften'),
+	('IMPORT', '_fzero'),
+	('IMPORT', '_raise_code'),
+	('IMPORT', '_raise_sets_code'),
+	('IMPORT', '_raise_disposition'),
+	('IMPORT', 'memset'),
+	('IMPORT', 'errno'),
+	('IMPORT', 'isspace'),
+	('DATA', '.58', code4, 0, 1),
+	('DATA', '.24', code5, 0, 1) ]
+module(code=code, name='../gigatron/libc/strtod.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

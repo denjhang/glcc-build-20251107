@@ -1,0 +1,42 @@
+#VCPUv5
+
+# ======== ('CODE', 'console_exitm_msgfunc', code0)
+def code0():
+	label('console_exitm_msgfunc');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R9);STW(R7);
+	_BEQ('.16');
+	LDI(3);STW('console_state');
+	LDWI('console_info');DEEK();STW(v('console_state')+2);
+	LDWI(257);STW(v('console_state')+4);
+	LDW(R7);STW(R8);
+	LDWI(v('console_info')+2);DEEK();STW(R9);
+	CALLI('console_print');
+	label('.16');
+	label('.15');
+	_EPILOGUE(8,4,0x80);
+# ======== ('CODE', '_console_setup', code1)
+def code1():
+	label('_console_setup');
+	_PROLOGUE(4,0,0x0); # save=None
+	CALLI('console_clear_screen');
+	LDWI('_exitm_msgfunc');STW(R23);
+	LDWI('console_exitm_msgfunc');DOKE(R23);
+	label('.21');
+	_EPILOGUE(4,0,0x0);
+# ======== (epilog)
+code=[
+	('CODE', 'console_exitm_msgfunc', code0),
+	('EXPORT', '_console_setup'),
+	('CODE', '_console_setup', code1),
+	('IMPORT', '_exitm_msgfunc'),
+	('IMPORT', 'console_clear_screen'),
+	('IMPORT', 'console_print'),
+	('IMPORT', 'console_state'),
+	('IMPORT', 'console_info') ]
+module(code=code, name='../gigatron/libc/cons_setup.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

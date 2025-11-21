@@ -1,0 +1,53 @@
+#VCPUv7
+
+# ======== ('CODE', 'setbuf', code0)
+def code0():
+	label('setbuf');
+	_PROLOGUE(16,8,0xe0); # save=R5-7
+	MOVW(R8,R7);
+	MOVW(R9,R6);
+	MOVW(R7,R8);
+	MOVW(R6,R9);
+	LDW(R6);_BEQ('.7');
+	MOVQW(64,R5);
+	_BRA('.8');
+	label('.7');
+	MOVQW(128,R5);
+	label('.8');
+	MOVW(R5,R10);
+	MOVIW(512,R11);
+	CALLI('setvbuf');
+	label('.5');
+	_EPILOGUE(16,8,0xe0);
+# ======== ('CODE', 'setvbuf', code1)
+def code1():
+	label('setvbuf');
+	PUSH();
+	PEEKV(R8);ANDI(47);
+	STW(R19);
+	_BEQ('.10');
+	LDW(R10);XORI(128);_BEQ('.13');
+	LDW(R10);XORI(64);_BEQ('.13');
+	LDW(R10);XORI(192);_BNE('.10');
+	label('.13');
+	LDW(R19);ORW(R10);POKE(R8);
+	LDI(0);
+	_BRA('.9');
+	label('.10');
+	LDWI('errno');DOKEQ(3);
+	LDWI(-1);
+	label('.9');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'setbuf'),
+	('CODE', 'setbuf', code0),
+	('EXPORT', 'setvbuf'),
+	('CODE', 'setvbuf', code1),
+	('IMPORT', 'errno') ]
+module(code=code, name='../gigatron/libc/setbuf.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

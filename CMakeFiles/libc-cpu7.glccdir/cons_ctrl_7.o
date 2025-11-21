@@ -1,0 +1,55 @@
+#VCPUv7
+
+# ======== ('CODE', '_console_ctrl', code0)
+def code0():
+	label('_console_ctrl');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	LDI(7);_CMPWS(R7);_BGT('.16');
+	LDI(12);_CMPWS(R7);_BLT('.16');
+	LDWI(v('.24')-14);ADDW(R7);ADDW(R7);DEEK();CALL(vAC);
+	label('.18');
+	LD(v('console_state')+3);ORI(3);ADDI(1);ST(v('console_state')+3);
+	_BRA('.17');
+	label('.21');
+	MOVQW(4,R8);
+	CALLI('_console_bell');
+	_BRA('.17');
+	label('.22');
+	CALLI('clrscr');
+	_BRA('.17');
+	label('.23');
+	CALLI('clreol');
+	_BRA('.17');
+	label('.16');
+	LDI(0);
+	_BRA('.15');
+	label('.17');
+	LDI(1);
+	label('.15');
+	_EPILOGUE(8,4,0x80,saveAC=True);
+# ======== ('DATA', '.24', code1, 0, 2)
+def code1():
+	align(2);
+	label('.24');
+	words('.21');
+	words('.16');
+	words('.18');
+	words('.16');
+	words('.23');
+	words('.22');
+# ======== (epilog)
+code=[
+	('EXPORT', '_console_ctrl'),
+	('CODE', '_console_ctrl', code0),
+	('DATA', '.24', code1, 0, 2),
+	('IMPORT', 'clreol'),
+	('IMPORT', 'clrscr'),
+	('IMPORT', '_console_bell'),
+	('IMPORT', 'console_state') ]
+module(code=code, name='../gigatron/libc/cons_ctrl.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

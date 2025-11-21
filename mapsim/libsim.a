@@ -1,0 +1,372 @@
+#VCPUv4
+
+# ======== ('DATA', '_iob0', code0, 6, 2)
+def code0():
+	align(2);
+	label('_iob0');
+	bytes(193); # 193
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(0);
+# ======== ('DATA', '_iob1', code1, 6, 2)
+def code1():
+	align(2);
+	label('_iob1');
+	bytes(194); # 194
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(1);
+# ======== ('DATA', '_iob2', code2, 6, 2)
+def code2():
+	align(2);
+	label('_iob2');
+	bytes(130); # 130
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(2);
+# ======== (epilog)
+code=[
+	('EXPORT', '_iob0'),
+	('DATA', '_iob0', code0, 6, 2),
+	('EXPORT', '_iob1'),
+	('DATA', '_iob1', code1, 6, 2),
+	('EXPORT', '_iob2'),
+	('DATA', '_iob2', code2, 6, 2),
+	('IMPORT', '_sim_iovec') ]
+module(code=code, name='../gigatron/mapsim/libsim/_stdio.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:
+#VCPUv5
+
+# ======== ('DATA', '_iob0', code0, 6, 2)
+def code0():
+	align(2);
+	label('_iob0');
+	bytes(193); # 193
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(0);
+# ======== ('DATA', '_iob1', code1, 6, 2)
+def code1():
+	align(2);
+	label('_iob1');
+	bytes(194); # 194
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(1);
+# ======== ('DATA', '_iob2', code2, 6, 2)
+def code2():
+	align(2);
+	label('_iob2');
+	bytes(130); # 130
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(2);
+# ======== (epilog)
+code=[
+	('EXPORT', '_iob0'),
+	('DATA', '_iob0', code0, 6, 2),
+	('EXPORT', '_iob1'),
+	('DATA', '_iob1', code1, 6, 2),
+	('EXPORT', '_iob2'),
+	('DATA', '_iob2', code2, 6, 2),
+	('IMPORT', '_sim_iovec') ]
+module(code=code, name='../gigatron/mapsim/libsim/_stdio.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:
+#VCPUv6
+
+# ======== ('DATA', '_iob0', code0, 6, 2)
+def code0():
+	align(2);
+	label('_iob0');
+	bytes(193); # 193
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(0);
+# ======== ('DATA', '_iob1', code1, 6, 2)
+def code1():
+	align(2);
+	label('_iob1');
+	bytes(194); # 194
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(1);
+# ======== ('DATA', '_iob2', code2, 6, 2)
+def code2():
+	align(2);
+	label('_iob2');
+	bytes(130); # 130
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(2);
+# ======== (epilog)
+code=[
+	('EXPORT', '_iob0'),
+	('DATA', '_iob0', code0, 6, 2),
+	('EXPORT', '_iob1'),
+	('DATA', '_iob1', code1, 6, 2),
+	('EXPORT', '_iob2'),
+	('DATA', '_iob2', code2, 6, 2),
+	('IMPORT', '_sim_iovec') ]
+module(code=code, name='../gigatron/mapsim/libsim/_stdio.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:
+#VCPUv7
+
+# ======== ('DATA', '_iob0', code0, 6, 2)
+def code0():
+	align(2);
+	label('_iob0');
+	bytes(193); # 193
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(0);
+# ======== ('DATA', '_iob1', code1, 6, 2)
+def code1():
+	align(2);
+	label('_iob1');
+	bytes(194); # 194
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(1);
+# ======== ('DATA', '_iob2', code2, 6, 2)
+def code2():
+	align(2);
+	label('_iob2');
+	bytes(130); # 130
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(2);
+# ======== (epilog)
+code=[
+	('EXPORT', '_iob0'),
+	('DATA', '_iob0', code0, 6, 2),
+	('EXPORT', '_iob1'),
+	('DATA', '_iob1', code1, 6, 2),
+	('EXPORT', '_iob2'),
+	('DATA', '_iob2', code2, 6, 2),
+	('IMPORT', '_sim_iovec') ]
+module(code=code, name='../gigatron/mapsim/libsim/_stdio.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:
+def scope():
+
+    def code_setf():
+        nohop()
+        label('_sim_setf')
+        STW(R16);_BLT('.ret4');_BGT('.ret')
+        XORW(R10);_BEQ('.ret')     # cnt
+        _PEEKV(R8);ORI(8);POKE(R8) # _IOEOF
+        _BRA('.ret')
+        label('.ret4')
+        _PEEKV(R8);ORI(4);POKE(R8) # _IOERR
+        label('.ret')
+        LDW(R16)
+        RET()
+
+    def code_writall():
+        nohop()
+        label('_sim_writall');
+        _MOVW(R10,R11);_MOVW(R9,R10) # swap arguments
+        _MOVW(R8,R9);_MOVW(R11,R8)   # for gtsim compatibility
+        _MOVIW('errno','sysArgs0')
+        _MOVIW(0xff02,'sysFn')
+        SYS(36)
+        PUSH();_CALLI('_sim_setf');POP();
+        RET()
+
+    def code_read():
+        nohop()
+        label('_sim_read');
+        _MOVIW('errno','sysArgs0')
+        _MOVIW(0xff03,'sysFn')
+        SYS(36)
+        PUSH();_CALLI('_sim_setf');POP();
+        RET()
+
+    def code_flush():
+        nohop()
+        label('_sim_flush');
+        _MOVIW('errno','sysArgs0')
+        _MOVIW(0xff05,'sysFn')
+        SYS(36)
+        RET()
+
+    def code_lseek():
+        nohop()
+        label('_sim_lseek');
+        _MOVIW('errno','sysArgs0')
+        _MOVIW(0xff04,'sysFn')
+        SYS(36)
+        RET()
+
+    def code_errno():
+        align(2)
+        label('errno')
+        space(2)
+        
+    def code_iovec():
+        align(2)
+        label('_sim_iovec')
+        words('_sim_writall')
+        words('_sim_read')
+        words('_sim_flush')
+        words('_sim_lseek')
+        
+    module(name='_iovec.c',
+           code=[ ('EXPORT', '_sim_iovec'),
+                  ('CODE', '_sim_setf', code_setf),
+                  ('CODE', '_sim_writall', code_writall),
+                  ('CODE', '_sim_read', code_read),
+                  ('CODE', '_sim_flush', code_flush),
+                  ('CODE', '_sim_lseek', code_lseek),
+                  ('COMMON', 'errno', code_errno, 2, 2),
+                  ('DATA', '_sim_iovec', code_iovec, 12, 2) ] )
+
+    def code_openf():
+        label('_openf')
+        _MOVIW('errno','sysArgs0')
+        _MOVIW('_sim_iovec','sysArgs2')
+        _MOVIW(0xff06,'sysFn')
+        SYS(36)
+        RET()
+
+    module(name='_openf.c',
+           code=[ ('EXPORT', '_openf'),
+                  ('IMPORT', '_sim_iovec'),
+                  ('CODE', '_openf', code_openf) ] )
+
+scope()
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: ()
+# End:
+
+### The rom/ram checking code must work on all cpu
+
+def code0():
+    ### _start()
+    label('_start');
+    # ensure stack alignment
+    # create stack headroom for argc and argv
+    LDWI(0xfffc);ANDW(SP);SUBI(4);STW(SP)
+    # call onload functions
+    for f in args.onload:
+        _CALLJ(f)
+    # initialize bss
+    if not args.no_runtime_bss_initialization:
+        _CALLJ('_init_bss')
+    # call init chain
+    LDWI('__glink_magic_init'); _CALLI('_callchain')
+    # call main
+    LDI(0); STW(R8); STW(R9); _CALLI('main'); STW(R8)
+    ### exit()
+    label('exit')
+    LDW(R8); STW(R0)
+    # call fini chain
+    LDWI('__glink_magic_fini'); _CALLI('_callchain')
+    LDW(R0); STW(R8)
+    ### _exit()
+    label('_exit')
+    LDW(R8);STW(R0)
+    LDI(0); STW(R9)
+    label('_exitm');
+    label('_exitm_msgfunc', pc()+1)
+    LDWI(0)                # _exitm_msgfunc is LDWI's argument here
+    #####
+    ##### Here diverge from the standard start function
+    ##### We ignore _exitm_msgfunc and just call the
+    ##### gtsim pseudo sys function.
+    #####
+    LDWI(0xff00);STW('sysFn');SYS(34)
+    HALT()
+
+def code1():
+    # subroutine to call a chain of init/fini functions
+    nohop()
+    label('_callchain')
+    DEEK(); STW(R7); LDW(vLR); STW(R6)
+    LDWI(0xBEEF);XORW(R7);_BEQ('.callchaindone')
+    LDW(R7);_BRA('.callchaintst')
+    label('.callchainloop')
+    DEEK();CALL(vAC)
+    LDI(2);ADDW(R7);DEEK();STW(R7)
+    label('.callchaintst')
+    _BNE('.callchainloop')
+    label('.callchaindone')
+    LDW(R6); STW(vLR); RET()
+
+def code2():
+    align(2)
+    label('__glink_magic_init')
+    words(0xBEEF)
+
+def code3():
+    align(2)
+    label('__glink_magic_fini')
+    words(0xBEEF)
+
+    
+# ======== (epilog)
+code=[
+    ('EXPORT', '_start'),
+    ('EXPORT', 'exit'),
+    ('EXPORT', '_exit'),
+    ('EXPORT', '_exitm'),
+    ('EXPORT', '_exitm_msgfunc'),
+    ('EXPORT', '__glink_magic_init'),
+    ('EXPORT', '__glink_magic_fini'),
+    ('CODE', '_start', code0),
+    ('CODE', '.callchain', code1),
+    ('DATA', '__glink_magic_init', code2, 2, 2),
+    ('DATA', '__glink_magic_fini', code3, 2, 2),
+    ('IMPORT', 'main') ]
+
+if args.gt1exec != args.e:
+    code.append(('IMPORT', args.gt1exec))        # causes map start stub to be included
+for f in args.onload:
+    code.append( ('IMPORT', f) )                 # causes onload funcs to be included
+if not args.no_runtime_bss_initialization:
+    code.append(('IMPORT', '_init_bss'))         # causes _init1.c to be included
+
+module(code=code, name='_start.s');
+
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: ()
+# End:
+	
+
+def scope():
+  if not 'USE_LIBC_PRINTF' in args.opts:
+    def code0():
+        nohop()
+        label('printf')
+        _MOVIW(0xff01,'sysFn');SYS(34)
+        RET();
+
+    module(name='printf.s',
+           code=[ ('EXPORT', 'printf'),
+                  ('CODE', 'printf', code0) ] )
+
+scope()
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: ()
+# End:

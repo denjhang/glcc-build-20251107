@@ -1,0 +1,17 @@
+#VCPUv5
+
+# ======== ('DATA', 'errno', code0, 2, 2)
+def code0():
+	align(2);
+	label('errno');
+	words(0); # 0
+# ======== (epilog)
+code=[
+	('EXPORT', 'errno'),
+	('DATA', 'errno', code0, 2, 2) ]
+module(code=code, name='../gigatron/libc/errno.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

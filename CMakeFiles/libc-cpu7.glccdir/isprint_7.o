@@ -1,0 +1,44 @@
+#VCPUv7
+
+# ======== ('CODE', 'isgraph', code0)
+def code0():
+	label('isgraph');
+	PUSH();
+	LDW(R8);SUBI(32);_BLE('.3');
+	LDW(R8);SUBI(131);_BGT('.3');
+	LDW(R8);XORI(127);_BEQ('.3');
+	MOVQW(1,R19);
+	_BRA('.4');
+	label('.3');
+	MOVQW(0,R19);
+	label('.4');
+	LDW(R19);
+	label('.1');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'isprint', code1)
+def code1():
+	label('isprint');
+	PUSH();
+	LDW(R8);SUBI(32);_BLT('.7');
+	LDW(R8);SUBI(131);_BGT('.7');
+	LDW(R8);XORI(127);_BEQ('.7');
+	MOVQW(1,R19);
+	_BRA('.8');
+	label('.7');
+	MOVQW(0,R19);
+	label('.8');
+	LDW(R19);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'isgraph'),
+	('CODE', 'isgraph', code0),
+	('EXPORT', 'isprint'),
+	('CODE', 'isprint', code1) ]
+module(code=code, name='../gigatron/libc/isprint.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

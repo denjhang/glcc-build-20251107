@@ -1,0 +1,65 @@
+#VCPUv7
+
+# ======== ('DATA', 'console_info', code0, 20, 2)
+def code0():
+	align(2);
+	label('console_info');
+	words(10); # 10
+	words(26); # 26
+	bytes(4,28);
+	bytes(52,76);
+	bytes(100,124);
+	bytes(148,172);
+	bytes(196,220);
+	space(5);
+	space(1);
+# ======== ('CODE', '_console_reset', code1)
+def code1():
+	label('_console_reset');
+	_PROLOGUE(20,8,0xf8); # save=R3-7
+	MOVW(R8,R7);
+	MOVIW('videoTable',R5);
+	MOVQW(48,R4);
+	LDW(R7);_BLT('.16');
+	MOVIW(0x2f00,R8);
+	STW(R9);
+	MOVQW(81,R10);
+	CALLI('_console_clear');
+	label('.16');
+	MOVQW(0,R3);
+	label('.18');
+	MOVQW(0,R6);
+	label('.22');
+	LDW(R6);SUBI(2);_BLT('.28');
+	LDW(R6);SUBI(10);_BLT('.26');
+	label('.28');
+	LDW(R5);DOKEQ(47);
+	_BRA('.27');
+	label('.26');
+	LDW(R4);
+	INCV(R4);
+	DOKE(R5);
+	label('.27');
+	label('.23');
+	INCV(R6);
+	ADDSV(2,R5);
+	LDW(R6);XORI(12);_BNE('.22');
+	label('.19');
+	INCV(R3);
+	LDW(R3);XORI(10);_BNE('.18');
+	label('.15');
+	_EPILOGUE(20,8,0xf8);
+# ======== (epilog)
+code=[
+	('EXPORT', 'console_info'),
+	('DATA', 'console_info', code0, 20, 2),
+	('EXPORT', '_console_reset'),
+	('CODE', '_console_reset', code1),
+	('IMPORT', 'videoTable'),
+	('IMPORT', '_console_clear') ]
+module(code=code, name='../gigatron/mapconx/libconx/cons_geom.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,67 @@
+#VCPUv5
+
+# ======== ('DATA', 'console_info', code0, 34, 2)
+def code0():
+	align(2);
+	label('console_info');
+	words(30); # 30
+	words(52); # 52
+	bytes(0,8);
+	bytes(16,24);
+	bytes(32,40);
+	bytes(48,56);
+	bytes(64,72);
+	bytes(80,88);
+	bytes(96,104);
+	bytes(112,120);
+	bytes(128,136);
+	bytes(144,152);
+	bytes(160,168);
+	bytes(176,184);
+	bytes(192,200);
+	bytes(208,216);
+	bytes(224,232);
+# ======== ('CODE', '_console_reset', code1)
+def code1():
+	label('_console_reset');
+	_PROLOGUE(16,8,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	LDWI('videoTable');STW(R5);
+	LDWI(3808);STW(R8);
+	CALLI('SYS_ExpanderControl');
+	LD(0xb);ORI(1);ST(0xb);
+	LDW(R7);_BLT('.16');
+	LDWI(0x800);STW(R8);
+	LDW(R7);STW(R9);
+	LDI(120);STW(R10);
+	CALLI('_console_clear');
+	LDWI(0x8000);STW(R8);
+	LDW(R7);STW(R9);
+	LDI(120);STW(R10);
+	CALLI('_console_clear');
+	label('.16');
+	LDI(8);STW(R6);
+	label('.18');
+	LDW(R5);STW(R23);
+	ADDI(2);STW(R5);
+	LDW(R6);DOKE(R23);
+	label('.19');
+	LDI(2);ADDW(R6);STW(R6);
+	XORI(248);_BNE('.18');
+	label('.15');
+	_EPILOGUE(16,8,0xe0);
+# ======== (epilog)
+code=[
+	('EXPORT', 'console_info'),
+	('DATA', 'console_info', code0, 34, 2),
+	('EXPORT', '_console_reset'),
+	('CODE', '_console_reset', code1),
+	('IMPORT', '_console_clear'),
+	('IMPORT', 'SYS_ExpanderControl'),
+	('IMPORT', 'videoTable') ]
+module(code=code, name='../gigatron/map512k/libcon_h/cons_geom.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

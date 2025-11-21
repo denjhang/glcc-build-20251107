@@ -1,0 +1,31 @@
+#VCPUv7
+
+# ======== ('CODE', 'fclose', code0)
+def code0():
+	label('fclose');
+	_PROLOGUE(8,2,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	PEEK();_BNE('.6');
+	LDWI('errno');DOKEQ(3);
+	LDWI(-1);
+	_BRA('.5');
+	label('.6');
+	MOVW(R7,R8);
+	CALLI('_sclose');
+	STW(R6);
+	LDW(R7);POKEQ(0);
+	LDW(R6);
+	label('.5');
+	_EPILOGUE(8,2,0xc0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'fclose'),
+	('CODE', 'fclose', code0),
+	('IMPORT', '_sclose'),
+	('IMPORT', 'errno') ]
+module(code=code, name='../gigatron/libc/fclose.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

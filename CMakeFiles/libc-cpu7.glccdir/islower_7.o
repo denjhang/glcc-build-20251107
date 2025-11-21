@@ -1,0 +1,68 @@
+#VCPUv7
+
+# ======== ('CODE', 'islower', code0)
+def code0():
+	label('islower');
+	PUSH();
+	LDW(R8);SUBI(97);_BLT('.3');
+	LDW(R8);SUBI(122);_BGT('.3');
+	MOVQW(1,R19);
+	_BRA('.4');
+	label('.3');
+	MOVQW(0,R19);
+	label('.4');
+	LDW(R19);
+	label('.1');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'isupper', code1)
+def code1():
+	label('isupper');
+	PUSH();
+	LDW(R8);SUBI(65);_BLT('.7');
+	LDW(R8);SUBI(90);_BGT('.7');
+	MOVQW(1,R19);
+	_BRA('.8');
+	label('.7');
+	MOVQW(0,R19);
+	label('.8');
+	LDW(R19);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'toupper', code2)
+def code2():
+	label('toupper');
+	PUSH();
+	LDW(R8);SUBI(97);_BLT('.10');
+	LDW(R8);SUBI(122);_BGT('.10');
+	LDW(R8);XORI(32);STW(R8);
+	label('.10');
+	LDW(R8);
+	label('.9');
+	tryhop(2);POP();RET()
+# ======== ('CODE', 'tolower', code3)
+def code3():
+	label('tolower');
+	PUSH();
+	LDW(R8);SUBI(65);_BLT('.13');
+	LDW(R8);SUBI(90);_BGT('.13');
+	LDW(R8);XORI(32);STW(R8);
+	label('.13');
+	LDW(R8);
+	label('.12');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'islower'),
+	('CODE', 'islower', code0),
+	('EXPORT', 'isupper'),
+	('CODE', 'isupper', code1),
+	('EXPORT', 'toupper'),
+	('CODE', 'toupper', code2),
+	('EXPORT', 'tolower'),
+	('CODE', 'tolower', code3) ]
+module(code=code, name='../gigatron/libc/islower.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

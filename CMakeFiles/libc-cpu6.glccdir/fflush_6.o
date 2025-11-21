@@ -1,0 +1,57 @@
+#VCPUv6
+
+# ======== ('CODE', '_flush', code0)
+def code0():
+	label('_flush');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	_BEQ('.6');
+	PEEK();_BEQ('.6');
+	PEEKV(R7);ANDI(239);POKE(R7);
+	LDI(2);ADDW(R7);DEEK();ADDI(4);DEEK();
+	STW(R6);
+	_BEQ('.8');
+	LDW(R7);STW(R8);
+	MOVQW(0,R9);
+	CALL(R6);
+	
+	_BRA('.5');
+	label('.8');
+	label('.6');
+	LDI(0);
+	label('.5');
+	_EPILOGUE(12,6,0xc0,saveAC=True);
+# ======== ('CODE', 'fflush', code1)
+def code1():
+	label('fflush');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	_BNE('.11');
+	LDWI('_flush');STW(R8);
+	CALLI('_swalk');
+	LDI(0);
+	_BRA('.10');
+	label('.11');
+	PEEKV(R7);_BNE('.13');
+	LDWI('errno');DOKEI(3);
+	LDWI(-1);
+	_BRA('.10');
+	label('.13');
+	LDW(R7);STW(R8);
+	CALLI('_flush');
+	
+	label('.10');
+	_EPILOGUE(8,4,0x80,saveAC=True);
+# ======== (epilog)
+code=[
+	('CODE', '_flush', code0),
+	('EXPORT', 'fflush'),
+	('CODE', 'fflush', code1),
+	('IMPORT', '_swalk'),
+	('IMPORT', 'errno') ]
+module(code=code, name='../gigatron/libc/fflush.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

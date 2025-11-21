@@ -1,0 +1,27 @@
+#VCPUv6
+
+# ======== ('CODE', 'abort', code0)
+def code0():
+	label('abort');
+	_PROLOGUE(8,6,0x0); # save=None
+	MOVQW(0,R8);
+	LDWI('.4');STW(R9);
+	CALLI('_raisem');
+	label('.3');
+	_EPILOGUE(8,6,0x0);
+# ======== ('DATA', '.4', code1, 0, 1)
+def code1():
+	label('.4');
+	bytes(65,98,111,114,116,0);
+# ======== (epilog)
+code=[
+	('EXPORT', 'abort'),
+	('CODE', 'abort', code0),
+	('IMPORT', '_raisem'),
+	('DATA', '.4', code1, 0, 1) ]
+module(code=code, name='../gigatron/libc/abort.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

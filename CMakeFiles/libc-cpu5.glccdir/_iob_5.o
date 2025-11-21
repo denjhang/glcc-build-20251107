@@ -1,0 +1,103 @@
+#VCPUv5
+
+# ======== ('CODE', '_sfindiob', code0)
+def code0():
+	label('_sfindiob');
+	PUSH();
+	LDWI('_iob');STW(R19);
+	_BRA('.9');
+	label('.6');
+	LDW(R19);PEEK();_BNE('.11');
+	LDW(R19);
+	_BRA('.5');
+	label('.11');
+	label('.7');
+	LDI(6);ADDW(R19);STW(R19);
+	label('.9');
+	LDWI(v('_iob')+24);XORW(R19);_BNE('.6');
+	LDI(0);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== ('CODE', '_sclose', code1)
+def code1():
+	label('_sclose');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	_BEQ('.14');
+	PEEK();_BEQ('.14');
+	LDI(2);ADDW(R7);DEEK();ADDI(4);DEEK();
+	STW(R6);
+	_BEQ('.16');
+	LDW(R7);STW(R8);
+	LDI(1);STW(R9);
+	CALL(R6);
+	
+	_BRA('.13');
+	label('.16');
+	label('.14');
+	LDI(0);
+	label('.13');
+	_EPILOGUE(12,6,0xc0,saveAC=True);
+# ======== ('CODE', '_swalk', code2)
+def code2():
+	label('_swalk');
+	_PROLOGUE(8,2,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	LDWI(v('_iob')+24);STW(R6);
+	label('.20');
+	LDW(R6);SUBI(-v(-6));STW(R6);
+	
+	STW(R8);
+	CALL(R7);
+	label('.21');
+	LDWI('_iob');XORW(R6);_BNE('.20');
+	LDWI('__glink_weak__iob2');_BEQ('.23');
+	STW(R8);
+	CALL(R7);
+	label('.23');
+	LDWI('__glink_weak__iob1');_BEQ('.25');
+	STW(R8);
+	CALL(R7);
+	label('.25');
+	LDWI('__glink_weak__iob0');_BEQ('.27');
+	STW(R8);
+	CALL(R7);
+	label('.27');
+	label('.18');
+	_EPILOGUE(8,2,0xc0);
+# ======== ('CODE', '_fcloseall', code3)
+def code3():
+	label('_fcloseall');
+	_PROLOGUE(4,2,0x0); # save=None
+	LDWI('_sclose');STW(R8);
+	CALLI('_swalk');
+	label('.29');
+	_EPILOGUE(4,2,0x0);
+# ======== ('DATA', '__glink_magic_fini', code4, 4, 2)
+def code4():
+	align(2);
+	label('__glink_magic_fini');
+	words('_fcloseall');
+	words(0);
+# ======== ('COMMON', '_iob', code5, 24, 2)
+def code5():
+	align(2);
+	label('_iob');
+	space(24);
+# ======== (epilog)
+code=[
+	('EXPORT', '_sfindiob'),
+	('CODE', '_sfindiob', code0),
+	('EXPORT', '_sclose'),
+	('CODE', '_sclose', code1),
+	('EXPORT', '_swalk'),
+	('CODE', '_swalk', code2),
+	('CODE', '_fcloseall', code3),
+	('DATA', '__glink_magic_fini', code4, 4, 2),
+	('COMMON', '_iob', code5, 24, 2) ]
+module(code=code, name='../gigatron/libc/_iob.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

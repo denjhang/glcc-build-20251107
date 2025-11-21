@@ -1,0 +1,33 @@
+#VCPUv6
+
+# ======== ('CODE', 'memcmp', code0)
+def code0():
+	label('memcmp');
+	PUSH();
+	_BRA('.3');
+	label('.2');
+	INCV(R8);
+	INCV(R9);
+	LDW(R10);SUBI(1);STW(R10);
+	label('.3');
+	LDW(R10);
+	STW(R19);
+	_BEQ('.5');
+	PEEKV(R9);STW(R23);
+	PEEKV(R8);SUBW(R23);
+	STW(R19);
+	_BEQ('.2');
+	label('.5');
+	LDW(R19);
+	label('.1');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'memcmp'),
+	('CODE', 'memcmp', code0) ]
+module(code=code, name='../gigatron/libc/memcmp.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

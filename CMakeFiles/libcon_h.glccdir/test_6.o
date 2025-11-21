@@ -1,0 +1,58 @@
+#VCPUv6
+
+# ======== ('CODE', 'main', code0)
+def code0():
+	label('main');
+	_PROLOGUE(12,8,0x80); # save=R7
+	LDWI(0xe8f0);STW(R8);
+	CALLI('SYS_ExpanderControl');
+	LDWI(0x8800);STW(R8);
+	MOVQW(3,R9);
+	MOVQW(160,R10);
+	CALLI('memset');
+	LDWI(0xc8f0);STW(R8);
+	CALLI('SYS_ExpanderControl');
+	LDWI(0x8800);STW(R8);
+	MOVQW(12,R9);
+	MOVQW(160,R10);
+	CALLI('memset');
+	MOVQW(240,R8);
+	CALLI('SYS_ExpanderControl');
+	LDWI('.16');STW(R8);
+	CALLI('cprintf');
+	MOVQW(1,R7);
+	label('.17');
+	LDWI('.21');STW(R8);
+	LDW(R7);STW(R9);
+	_STLW(2,src=R9);
+	CALLI('cprintf');
+	label('.18');
+	INCV(R7);
+	LDW(R7);_CMPIS(100);_BLT('.17');
+	LDI(0);
+	label('.15');
+	_EPILOGUE(12,8,0x80,saveAC=True);
+# ======== ('DATA', '.21', code1, 0, 1)
+def code1():
+	label('.21');
+	bytes(42,32,37,100,10,0);
+# ======== ('DATA', '.16', code2, 0, 1)
+def code2():
+	label('.16');
+	bytes(10,10,72,101,108,108,111,32);
+	bytes(87,111,114,108,100,10,10,0);
+# ======== (epilog)
+code=[
+	('EXPORT', 'main'),
+	('CODE', 'main', code0),
+	('IMPORT', 'SYS_ExpanderControl'),
+	('IMPORT', 'cprintf'),
+	('IMPORT', 'memset'),
+	('DATA', '.21', code1, 0, 1),
+	('DATA', '.16', code2, 0, 1) ]
+module(code=code, name='../gigatron/map512k/libcon_h/test.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,120 @@
+#VCPUv4
+
+# ======== ('DATA', 'ln2', code0, 5, 1)
+def code0():
+	label('ln2');
+	bytes(128,49,114,23,248); # 0.693147
+# ======== ('CODE', 'sinh', code1)
+def code1():
+	label('sinh');
+	_PROLOGUE(24,10,0xe0); # save=R5-7
+	_MOVF(F8,F5);
+	_MOVF('_fone',F8);
+	_MOVF(F5,F11);
+	LDWI('copysign');CALL(vAC);
+	_MOVF(FAC,[SP,-5+24]);
+	_MOVF(F5,F8);
+	LDWI('fabs');CALL(vAC);
+	_MOVF(FAC,F5);
+	_MOVF(F5,FAC);LDWI('.6');_FCMP();_BGE('.4');
+	_MOVF(F5,F8);
+	LDWI('exp');CALL(vAC);
+	_MOVF(FAC,F5);
+	_MOVF(F5,FAC);LDWI('_fone');_FDIVR();LDI(F5);_FSUBR();_MOVF(FAC,F8);
+	LDWI(-1);STW(R11);
+	LDWI('ldexp');CALL(vAC);
+	_MOVF(FAC,F5);
+	_BRA('.5');
+	label('.4');
+	_MOVF(F5,FAC);LDWI('ln2');_FSUB();_MOVF(FAC,F8);
+	LDWI('exp');CALL(vAC);
+	_MOVF(FAC,F5);
+	label('.5');
+	_MOVF(F5,F8);
+	_MOVF([SP,-5+24],F11);
+	LDWI('copysign');CALL(vAC);
+	
+	label('.3');
+	_EPILOGUE(24,10,0xe0);
+# ======== ('CODE', 'cosh', code2)
+def code2():
+	label('cosh');
+	_PROLOGUE(16,8,0xe0); # save=R5-7
+	_MOVF(F8,F5);
+	_MOVF(F5,F8);
+	LDWI('fabs');CALL(vAC);
+	_MOVF(FAC,F5);
+	_MOVF(F5,FAC);LDWI('.6');_FCMP();_BGE('.8');
+	_MOVF(F5,F8);
+	LDWI('exp');CALL(vAC);
+	_MOVF(FAC,F5);
+	_MOVF(F5,FAC);LDWI('_fone');_FDIVR();LDI(F5);_FADD();_MOVF(FAC,F8);
+	LDWI(-1);STW(R11);
+	LDWI('ldexp');CALL(vAC);
+	_MOVF(FAC,F5);
+	_BRA('.9');
+	label('.8');
+	_MOVF(F5,FAC);LDWI('ln2');_FSUB();_MOVF(FAC,F8);
+	LDWI('exp');CALL(vAC);
+	_MOVF(FAC,F5);
+	label('.9');
+	_MOVF(F5,FAC);
+	label('.7');
+	_EPILOGUE(16,8,0xe0);
+# ======== ('CODE', 'tanh', code3)
+def code3():
+	label('tanh');
+	_PROLOGUE(24,10,0xe0); # save=R5-7
+	_MOVF(F8,F5);
+	_MOVF('_fone',F8);
+	_MOVF(F5,F11);
+	LDWI('copysign');CALL(vAC);
+	_MOVF(FAC,[SP,-5+24]);
+	_MOVF(F5,F8);
+	LDWI('fabs');CALL(vAC);
+	_MOVF(FAC,F5);
+	_MOVF(F5,FAC);LDWI('.6');_FCMP();_BGE('.11');
+	_MOVF(F5,F8);
+	LDI(1);STW(R11);
+	LDWI('ldexp');CALL(vAC);
+	_FNEG();_MOVF(FAC,F8);
+	LDWI('exp');CALL(vAC);
+	_MOVF(FAC,F5);
+	_MOVF('_fone',F21);
+	_MOVF(F21,FAC);LDI(F5);_FADD();_MOVF(FAC,F18);
+	_MOVF(F21,FAC);LDI(F5);_FSUB();LDI(F18);_FDIV();_MOVF(FAC,F5);
+	_BRA('.12');
+	label('.11');
+	_MOVF('_fone',F5);
+	label('.12');
+	_MOVF(F5,F8);
+	_MOVF([SP,-5+24],F11);
+	LDWI('copysign');CALL(vAC);
+	
+	label('.10');
+	_EPILOGUE(24,10,0xe0);
+# ======== ('DATA', '.6', code4, 0, 1)
+def code4():
+	label('.6');
+	bytes(133,0,0,0,0); # 16
+# ======== (epilog)
+code=[
+	('DATA', 'ln2', code0, 5, 1),
+	('EXPORT', 'sinh'),
+	('CODE', 'sinh', code1),
+	('EXPORT', 'cosh'),
+	('CODE', 'cosh', code2),
+	('EXPORT', 'tanh'),
+	('CODE', 'tanh', code3),
+	('IMPORT', '_fone'),
+	('IMPORT', 'copysign'),
+	('IMPORT', 'fabs'),
+	('IMPORT', 'ldexp'),
+	('IMPORT', 'exp'),
+	('DATA', '.6', code4, 0, 1) ]
+module(code=code, name='../gigatron/libc/sinh.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

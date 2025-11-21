@@ -1,0 +1,98 @@
+#VCPUv5
+
+# ======== ('DATA', '_mask', code0, 8, 1)
+def code0():
+	label('_mask');
+	bytes(1,2);
+	bytes(4,8);
+	bytes(16,32);
+	bytes(64,128);
+# ======== ('CODE', '_spnset', code1)
+def code1():
+	label('_spnset');
+	_PROLOGUE(12,4,0xe0); # save=R5-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R7);STW(R8);
+	LDI(32);STW(R9);
+	CALLI('_bitset_clear');
+	_BRA('.5');
+	label('.4');
+	LDW(R7);STW(R8);
+	LDW(R5);STW(R9);
+	CALLI('_bitset_set');
+	LDI(1);ADDW(R6);STW(R6);
+	label('.5');
+	LDW(R6);PEEK();
+	STW(R5);
+	_BNE('.4');
+	label('.3');
+	_EPILOGUE(12,4,0xe0);
+# ======== ('CODE', 'strspn', code2)
+def code2():
+	label('strspn');
+	_PROLOGUE(48,6,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R7);STW(R4);
+	_SP(-32+48);STW(R8);
+	LDW(R6);STW(R9);
+	CALLI('_spnset');
+	_BRA('.9');
+	label('.8');
+	LDI(1);ADDW(R7);STW(R7);
+	label('.9');
+	LDW(R7);PEEK();
+	STW(R5);
+	_BEQ('.11');
+	_SP(-32+48);STW(R8);
+	LDW(R5);STW(R9);
+	CALLI('_bitset_test');
+	_BNE('.8');
+	label('.11');
+	LDW(R7);SUBW(R4);
+	label('.7');
+	_EPILOGUE(48,6,0xf0,saveAC=True);
+# ======== ('CODE', 'strcspn', code3)
+def code3():
+	label('strcspn');
+	_PROLOGUE(48,6,0xf0); # save=R4-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R7);STW(R4);
+	_SP(-32+48);STW(R8);
+	LDW(R6);STW(R9);
+	CALLI('_spnset');
+	_BRA('.14');
+	label('.13');
+	LDI(1);ADDW(R7);STW(R7);
+	label('.14');
+	LDW(R7);PEEK();
+	STW(R5);
+	_BEQ('.16');
+	_SP(-32+48);STW(R8);
+	LDW(R5);STW(R9);
+	CALLI('_bitset_test');
+	_BEQ('.13');
+	label('.16');
+	LDW(R7);SUBW(R4);
+	label('.12');
+	_EPILOGUE(48,6,0xf0,saveAC=True);
+# ======== (epilog)
+code=[
+	('DATA', '_mask', code0, 8, 1),
+	('EXPORT', '_spnset'),
+	('CODE', '_spnset', code1),
+	('EXPORT', 'strspn'),
+	('CODE', 'strspn', code2),
+	('EXPORT', 'strcspn'),
+	('CODE', 'strcspn', code3),
+	('IMPORT', '_bitset_test'),
+	('IMPORT', '_bitset_set'),
+	('IMPORT', '_bitset_clear') ]
+module(code=code, name='../gigatron/libc/strspn.c', cpu=5);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

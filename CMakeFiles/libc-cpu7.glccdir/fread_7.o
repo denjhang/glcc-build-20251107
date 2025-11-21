@@ -1,0 +1,65 @@
+#VCPUv7
+
+# ======== ('CODE', '_fread', code0)
+def code0():
+	label('_fread');
+	_PROLOGUE(20,6,0xfc); # save=R2-7
+	MOVW(R8,R7);
+	MOVW(R9,R6);
+	MOVW(R10,R5);
+	MOVQW(0,R3);
+	MOVW(R7,R8);
+	CALLI('_schkread');
+	STW(R2);
+	_BEQ('.6');
+	LDW(R5);_BEQ('.6');
+	PEEKV(R7);
+	STW(R4);
+	ANDI(16);_BEQ('.11');
+	LDW(R4);XORI(16);POKE(R7);
+	LDI(1);ADDW(R7);PEEK();POKE(R6);
+	INCV(R3);
+	_BRA('.11');
+	label('.10');
+	LDW(R4);ADDV(R3);
+	label('.11');
+	LDW(R3);_CMPWU(R5);_BGE('.13');
+	MOVW(R7,R8);
+	LDW(R3);ADDW(R6);STW(R9);
+	LDW(R5);SUBW(R3);STW(R10);
+	CALL(R2);
+	STW(R4);
+	_BGT('.10');
+	label('.13');
+	label('.6');
+	LDW(R3);
+	label('.5');
+	_EPILOGUE(20,6,0xfc,saveAC=True);
+# ======== ('CODE', 'fread', code1)
+def code1():
+	label('fread');
+	_PROLOGUE(16,6,0xf0); # save=R4-7
+	MOVW(R8,R7);
+	MOVW(R9,R6);
+	MOVW(R10,R5);
+	LDW(R11);STW(R4);
+	STW(R8);
+	MOVW(R7,R9);
+	LDW(R5);_MUL(R6);STW(R10);
+	CALLI('_fread');
+	_DIVU(R6);
+	label('.14');
+	_EPILOGUE(16,6,0xf0,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', '_fread'),
+	('CODE', '_fread', code0),
+	('EXPORT', 'fread'),
+	('CODE', 'fread', code1),
+	('IMPORT', '_schkread') ]
+module(code=code, name='../gigatron/libc/fread.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

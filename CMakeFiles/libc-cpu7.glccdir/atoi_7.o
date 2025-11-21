@@ -1,0 +1,58 @@
+#VCPUv7
+
+# ======== ('CODE', 'atoi', code0)
+def code0():
+	label('atoi');
+	PUSH();
+	LDI(0);STW(R19);
+	STW(R18);
+	PEEKV(R8);STW(R17);
+	_BRA('.5');
+	label('.4');
+	INCV(R8);
+	LDW(R8);
+	PEEK();STW(R17);
+	label('.5');
+	LDW(R17);XORI(32);_BEQ('.4');
+	LDW(R17);SUBI(9);_BLT('.7');
+	LDW(R17);SUBI(13);_BLE('.4');
+	label('.7');
+	LDW(R17);XORI(45);_BNE('.8');
+	INCV(R8);
+	LDW(R8);
+	PEEK();
+	STW(R17);
+	STW(R18);
+	_BRA('.13');
+	label('.8');
+	LDW(R17);XORI(43);_BNE('.13');
+	INCV(R8);
+	LDW(R8);
+	PEEK();STW(R17);
+	_BRA('.13');
+	label('.12');
+	ADDSV(-48,R17);
+	LDW(R19);_MULI(10);ADDW(R17);STW(R19);
+	INCV(R8);
+	LDW(R8);
+	PEEK();STW(R17);
+	label('.13');
+	LDW(R17);SUBI(48);_BLT('.15');
+	LDW(R17);SUBI(57);_BLE('.12');
+	label('.15');
+	LDW(R18);_BEQ('.16');
+	NEGV(R19);
+	label('.16');
+	LDW(R19);
+	label('.3');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'atoi'),
+	('CODE', 'atoi', code0) ]
+module(code=code, name='../gigatron/libc/atoi.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

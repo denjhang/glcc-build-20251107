@@ -1,0 +1,43 @@
+#VCPUv7
+
+# ======== ('CODE', '_schkread', code0)
+def code0():
+	label('_schkread');
+	PUSH();
+	MOVIW('errno',R18);
+	PEEKV(R8);STW(R17);
+	_BNE('.6');
+	LDW(R18);DOKEQ(3);
+	_BRA('.7');
+	label('.6');
+	LDXW(R8,2);ADDI(2);DEEK();
+	STW(R19);
+	_BNE('.8');
+	LDW(R18);DOKEQ(10);
+	_BRA('.9');
+	label('.8');
+	LDW(R17);ANDI(1);_BNE('.10');
+	LDW(R18);DOKEQ(9);
+	_BRA('.11');
+	label('.10');
+	LDW(R17);ANDI(12);_BNE('.12');
+	LDW(R19);
+	_BRA('.5');
+	label('.12');
+	label('.11');
+	label('.9');
+	label('.7');
+	LDI(0);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', '_schkread'),
+	('CODE', '_schkread', code0),
+	('IMPORT', 'errno') ]
+module(code=code, name='../gigatron/libc/_schkread.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

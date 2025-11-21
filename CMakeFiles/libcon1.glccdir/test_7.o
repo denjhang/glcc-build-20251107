@@ -1,0 +1,41 @@
+#VCPUv7
+
+# ======== ('CODE', 'main', code0)
+def code0():
+	label('main');
+	_PROLOGUE(12,8,0x0); # save=None
+	LDWI('ctrlBits_v5');PEEKA(R23);
+	_SP(-1+12);POKEA(R23);
+	MOVQW(124,R8);
+	CALLI('SYS_ExpanderControl');
+	MOVIW(0x8200,R8);
+	MOVQW(3,R9);
+	MOVQW(160,R10);
+	CALLI('memset');
+	_LDLW(-1+12);LD(vACL);STW(R8);
+	CALLI('SYS_ExpanderControl');
+	MOVIW('.16',R8);
+	CALLI('cprintf');
+	LDI(0);
+	label('.15');
+	_EPILOGUE(12,8,0x0,saveAC=True);
+# ======== ('DATA', '.16', code1, 0, 1)
+def code1():
+	label('.16');
+	bytes(10,10,72,101,108,108,111,32);
+	bytes(87,111,114,108,100,10,10,0);
+# ======== (epilog)
+code=[
+	('EXPORT', 'main'),
+	('CODE', 'main', code0),
+	('IMPORT', 'SYS_ExpanderControl'),
+	('IMPORT', 'ctrlBits_v5', 'AT', 0x1f8),
+	('IMPORT', 'cprintf'),
+	('IMPORT', 'memset'),
+	('DATA', '.16', code1, 0, 1) ]
+module(code=code, name='../gigatron/map128k/libcon1/test.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

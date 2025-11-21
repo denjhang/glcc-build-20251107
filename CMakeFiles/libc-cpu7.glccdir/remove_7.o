@@ -1,0 +1,21 @@
+#VCPUv7
+
+# ======== ('CODE', 'remove', code0)
+def code0():
+	label('remove');
+	PUSH();
+	LDWI('errno');DOKEQ(10);
+	LDWI(-1);
+	label('.5');
+	tryhop(2);POP();RET()
+# ======== (epilog)
+code=[
+	('EXPORT', 'remove'),
+	('CODE', 'remove', code0),
+	('IMPORT', 'errno') ]
+module(code=code, name='../gigatron/libc/remove.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

@@ -1,0 +1,39 @@
+#VCPUv6
+
+# ======== ('CODE', 'putc', code0)
+def code0():
+	label('putc');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	LDW(R9);STW(R6);
+	LDW(R7);STW(R8);
+	LDW(R6);STW(R9);
+	CALLI('fputc');
+	
+	label('.5');
+	_EPILOGUE(12,6,0xc0,saveAC=True);
+# ======== ('CODE', 'putchar', code1)
+def code1():
+	label('putchar');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	STW(R8);
+	LDWI('_iob1');STW(R9);
+	CALLI('fputc');
+	
+	label('.6');
+	_EPILOGUE(8,4,0x80,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'putc'),
+	('CODE', 'putc', code0),
+	('EXPORT', 'putchar'),
+	('CODE', 'putchar', code1),
+	('IMPORT', 'fputc'),
+	('IMPORT', '_iob1') ]
+module(code=code, name='../gigatron/libc/putc.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

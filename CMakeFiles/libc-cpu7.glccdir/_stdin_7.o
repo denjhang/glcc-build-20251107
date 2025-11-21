@@ -1,0 +1,65 @@
+#VCPUv7
+
+# ======== ('CODE', 'cons_read', code0)
+def code0():
+	label('cons_read');
+	_PROLOGUE(16,6,0xf0); # save=R4-7
+	MOVW(R8,R7);
+	MOVW(R9,R6);
+	LDI(4);ADDW(R7);STW(R4);
+	PEEKV(R7);ANDI(64);_BNE('.15');
+	LDW(R4);DOKEQ(0);
+	CALLI('console_waitkey');
+	STW(R5);
+	_BRA('.13');
+	label('.14');
+	LDWI('cons_ibuf');DOKE(R4);
+	STW(R8);
+	MOVQW(80,R9);
+	CALLI('console_readline');
+	label('.15');
+	DEEKV(R4);
+	_BEQ('.14');
+	PEEK();
+	STW(R5);
+	_BEQ('.14');
+	DEEKV(R4);ADDI(1);DOKE(R4);
+	label('.13');
+	LDW(R5);POKE(R6);
+	LDI(1);
+	label('.11');
+	_EPILOGUE(16,6,0xf0,saveAC=True);
+# ======== ('DATA', '_iov0', code1, 8, 2)
+def code1():
+	align(2);
+	label('_iov0');
+	words(0);
+	words('cons_read');
+	space(4);
+# ======== ('DATA', '_iob0', code2, 6, 2)
+def code2():
+	align(2);
+	label('_iob0');
+	bytes(193); # 193
+	bytes(0); # 0
+	words('_iov0');
+	words(0);
+# ======== ('BSS', 'cons_ibuf', code3, 80, 1)
+def code3():
+	label('cons_ibuf');
+	space(80);
+# ======== (epilog)
+code=[
+	('CODE', 'cons_read', code0),
+	('DATA', '_iov0', code1, 8, 2),
+	('EXPORT', '_iob0'),
+	('DATA', '_iob0', code2, 6, 2),
+	('BSS', 'cons_ibuf', code3, 80, 1),
+	('IMPORT', 'console_readline'),
+	('IMPORT', 'console_waitkey') ]
+module(code=code, name='../gigatron/libc/_stdin.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

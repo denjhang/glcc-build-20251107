@@ -1,0 +1,29 @@
+#VCPUv6
+
+# ======== ('CODE', 'puts', code0)
+def code0():
+	label('puts');
+	_PROLOGUE(8,4,0x80); # save=R7
+	LDW(R8);STW(R7);
+	STW(R8);
+	LDWI('_iob1');STW(R9);
+	CALLI('fputs');
+	MOVQW(10,R8);
+	LDWI('_iob1');STW(R9);
+	CALLI('fputc');
+	
+	label('.5');
+	_EPILOGUE(8,4,0x80,saveAC=True);
+# ======== (epilog)
+code=[
+	('EXPORT', 'puts'),
+	('CODE', 'puts', code0),
+	('IMPORT', 'fputs'),
+	('IMPORT', 'fputc'),
+	('IMPORT', '_iob1') ]
+module(code=code, name='../gigatron/libc/puts.c', cpu=6);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

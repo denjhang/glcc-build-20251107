@@ -1,0 +1,1 @@
+/mingw64/bin/cc.exe -O2 -g -DNDEBUG -Wl,--enable-auto-import CMakeFiles/lcc.dir/etc/lcc.c.o "CMakeFiles/lcc.dir/etc/gigatron-lcc.c.o" -o lcc.exe -Wl,--out-implib,liblcc.dll.a -Wl,--major-image-version,0,--minor-image-version,0

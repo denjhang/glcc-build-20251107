@@ -1,0 +1,41 @@
+#VCPUv7
+
+# ======== ('DATA', '_iob0', code0, 6, 2)
+def code0():
+	align(2);
+	label('_iob0');
+	bytes(193); # 193
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(0);
+# ======== ('DATA', '_iob1', code1, 6, 2)
+def code1():
+	align(2);
+	label('_iob1');
+	bytes(194); # 194
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(1);
+# ======== ('DATA', '_iob2', code2, 6, 2)
+def code2():
+	align(2);
+	label('_iob2');
+	bytes(130); # 130
+	bytes(0); # 0
+	words('_sim_iovec');
+	words(2);
+# ======== (epilog)
+code=[
+	('EXPORT', '_iob0'),
+	('DATA', '_iob0', code0, 6, 2),
+	('EXPORT', '_iob1'),
+	('DATA', '_iob1', code1, 6, 2),
+	('EXPORT', '_iob2'),
+	('DATA', '_iob2', code2, 6, 2),
+	('IMPORT', '_sim_iovec') ]
+module(code=code, name='../gigatron/mapsim/libsim/_stdio.c', cpu=7);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:

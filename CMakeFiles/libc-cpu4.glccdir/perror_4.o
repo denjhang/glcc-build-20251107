@@ -1,0 +1,47 @@
+#VCPUv4
+
+# ======== ('CODE', 'perror', code0)
+def code0():
+	label('perror');
+	_PROLOGUE(12,6,0xc0); # save=R6-7
+	LDW(R8);STW(R7);
+	LDWI('_iob2');STW(R6);
+	LDW(R7);_BEQ('.2');
+	PEEK();_BEQ('.2');
+	LDW(R7);STW(R8);
+	LDW(R6);STW(R9);
+	LDWI('fputs');CALL(vAC);
+	LDWI('.4');STW(R8);
+	LDW(R6);STW(R9);
+	LDWI('fputs');CALL(vAC);
+	label('.2');
+	LDWI('errno');DEEK();STW(R8);
+	LDWI('strerror');CALL(vAC);
+	STW(R8);
+	LDW(R6);STW(R9);
+	LDWI('fputs');CALL(vAC);
+	LDI(10);STW(R8);
+	LDW(R6);STW(R9);
+	LDWI('fputc');CALL(vAC);
+	label('.1');
+	_EPILOGUE(12,6,0xc0);
+# ======== ('DATA', '.4', code1, 0, 1)
+def code1():
+	label('.4');
+	bytes(58,32,0);
+# ======== (epilog)
+code=[
+	('EXPORT', 'perror'),
+	('CODE', 'perror', code0),
+	('IMPORT', 'errno'),
+	('IMPORT', 'strerror'),
+	('IMPORT', 'fputs'),
+	('IMPORT', 'fputc'),
+	('IMPORT', '_iob2'),
+	('DATA', '.4', code1, 0, 1) ]
+module(code=code, name='../gigatron/libc/perror.c', cpu=4);
+
+# Local Variables:
+# mode: python
+# indent-tabs-mode: t
+# End:
